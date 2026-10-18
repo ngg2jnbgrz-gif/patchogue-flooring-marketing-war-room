@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PF Marketing War Room</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;background:#04070d;color:#d7f4ff;min-height:100vh;-webkit-tap-highlight-color:transparent}
+body:before{content:"";position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.045) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;z-index:0}
+.wr{max-width:760px;margin:0 auto;padding:14px 14px 90px;position:relative;z-index:1}
+.hd{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.radar{width:46px;height:46px;border-radius:50%;border:2px solid #00e5ff;position:relative;flex:0 0 46px;box-shadow:0 0 12px rgba(0,229,255,.5)}
+.radar:before{content:"";position:absolute;inset:6px;border-radius:50%;border:1px solid rgba(0,229,255,.4)}
+.radar:after{content:"";position:absolute;left:50%;top:50%;width:50%;height:2px;background:linear-gradient(90deg,#00e5ff,transparent);transform-origin:left center;animation:spin 4.5s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.title{font-size:22px;font-weight:800;letter-spacing:3px;color:#00e5ff;text-shadow:0 0 14px rgba(0,229,255,.7)}
+.sub{font-size:10.5px;letter-spacing:1.5px;color:#5f7f95;margin-top:2px}
+.stamp{margin-left:auto;font-size:10px;color:#3d5a6e;text-align:right;line-height:1.5}
+.weeksel{display:flex;gap:8px;margin:10px 0 4px}
+.weeksel select{flex:1;background:#08131d;border:1px solid #12344a;color:#00e5ff;border-radius:10px;padding:12px;font-size:14px;font-weight:700;font-family:inherit}
+.tabs{display:flex;gap:6px;margin:12px 0;position:sticky;top:0;z-index:5;background:#04070d;padding:8px 0}
+.tabs button{flex:1;background:#08131d;border:1px solid #12344a;color:#7fb6d1;border-radius:9px;padding:11px 4px;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;white-space:nowrap;font-family:inherit}
+.tabs button.on{background:#06283a;border-color:#00e5ff;color:#00e5ff;box-shadow:0 0 10px rgba(0,229,255,.35)}
+.hidden{display:none!important}
+.prog{font-size:11px;color:#ffb300;letter-spacing:1px;margin-bottom:8px}
+.bar{height:6px;background:#0e2233;border-radius:99px;overflow:hidden;margin-top:6px}
+.fill{height:100%;background:#ffb300;width:0%;transition:width .3s}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.stat{background:#0a141f;border:1px solid #12344a;border-radius:10px;padding:10px 12px}
+.stat .k{font-size:10px;letter-spacing:1.2px;color:#5f7f95}
+.stat .v{font-size:20px;font-weight:800;color:#00e5ff;margin-top:2px}
+.stat .v.amber{color:#ffb300}
+.stat.wide{grid-column:1/-1}
+.stat .hook{font-size:13px;color:#fff;margin-top:4px;line-height:1.4}
+.sect{font-size:11px;letter-spacing:2px;color:#5f7f95;margin:16px 0 8px}
+.abrow{background:#0a141f;border:1px solid #12344a;border-radius:10px;padding:9px 12px;margin-bottom:7px}
+.abrow .top{display:flex;justify-content:space-between;align-items:baseline;font-size:13px}
+.abrow .top b{color:#fff}
+.abrow .top .er{color:#00e5ff;font-weight:800}
+.abrow .meta{font-size:11px;color:#5f7f95;margin-top:2px}
+.abbar{height:5px;background:#0e2233;border-radius:99px;margin-top:7px;overflow:hidden}
+.abfill{height:100%;background:#00e5ff}
+.filters{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.filters select,.filters input{background:#08131d;border:1px solid #12344a;color:#d7f4ff;border-radius:9px;padding:10px;font-size:14px;font-family:inherit}
+.filters select{flex:1;min-width:0}
+.search{width:100%;background:#08131d;border:1px solid #12344a;color:#d7f4ff;border-radius:9px;padding:12px;font-size:16px;margin-bottom:10px;font-family:inherit}
+.search::placeholder{color:#3d5a6e}
+.count{font-size:11px;color:#5f7f95;margin-bottom:8px;letter-spacing:1px}
+.pcard{background:#0a141f;border:1px solid #12344a;border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
+.pcard:active{background:#0d1a29}
+.pcard .r1{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11px}
+.badge{font-size:9.5px;font-weight:800;letter-spacing:.7px;border-radius:99px;padding:3px 8px}
+.b-pain{background:rgba(255,80,80,.15);color:#ff8080;border:1px solid rgba(255,80,80,.4)}
+.b-species{background:rgba(150,110,70,.18);color:#d8a86a;border:1px solid rgba(150,110,70,.45)}
+.b-trust{background:rgba(0,229,255,.14);color:#00e5ff;border:1px solid rgba(0,229,255,.4)}
+.b-engage{background:rgba(255,179,0,.13);color:#ffb300;border:1px solid rgba(255,179,0,.4)}
+.b-tech{background:rgba(170,120,255,.14);color:#c09aff;border:1px solid rgba(170,120,255,.4)}
+.b-fmt{background:#12344a;color:#7fb6d1}
+.b-time{color:#5f7f95;font-weight:700;letter-spacing:.5px}
+.pcard .hook{font-weight:700;font-size:14px;color:#fff;margin-top:6px;line-height:1.4}
+.pcard .r3{display:flex;gap:8px;align-items:center;margin-top:8px}
+.st{font-size:10px;font-weight:800;letter-spacing:.8px;border-radius:99px;padding:4px 10px}
+.st-scheduled{background:rgba(255,255,255,.07);color:#8aa0b4;border:1px solid #234052}
+.st-posted{background:rgba(0,229,255,.14);color:#00e5ff;border:1px solid rgba(0,229,255,.4)}
+.st-skipped{background:rgba(255,80,80,.12);color:#ff8080;border:1px solid rgba(255,80,80,.35)}
+.erchip{margin-left:auto;font-size:12px;font-weight:800;color:#ffb300}
+.wrow{background:#0a141f;border:1px solid #12344a;border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start}
+.wrow.top3{border-color:#ffb300;box-shadow:0 0 10px rgba(255,179,0,.22)}
+.rank{flex:0 0 30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;background:#12344a;color:#7fb6d1}
+.wrow.top3 .rank{background:#ffb300;color:#1a1200}
+.wmain{flex:1;min-width:0}
+.wmain .hook{font-size:13px;font-weight:600;color:#fff;line-height:1.4}
+.wmain .meta{font-size:11px;color:#5f7f95;margin-top:4px}
+.wer{flex:0 0 auto;text-align:right}
+.wer .n{font-size:18px;font-weight:800;color:#00e5ff}
+.wer .l{font-size:9px;color:#5f7f95;letter-spacing:1px}
+.empty{text-align:center;color:#5f7f95;padding:30px 10px;font-size:13px;line-height:1.6}
+.btn{display:block;width:100%;background:#08131d;border:1px solid #00e5ff;color:#00e5ff;border-radius:10px;padding:14px;font-weight:800;font-size:14px;letter-spacing:1px;cursor:pointer;font-family:inherit;margin-top:10px}
+.btn.amber{border-color:#ffb300;color:#ffb300}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheetcard{background:#0a141f;border:1px solid #12344a;border-bottom:none;border-radius:16px 16px 0 0;width:100%;max-width:760px;max-height:94vh;overflow-y:auto;padding:16px 16px calc(20px + env(safe-area-inset-bottom))}
+.sheetcard h2{font-size:16px;color:#fff;line-height:1.4;margin:8px 0}
+.sheetcard .fld{margin:10px 0}
+.sheetcard label{display:block;font-size:10px;letter-spacing:1.2px;color:#5f7f95;margin-bottom:5px}
+.sheetcard input,.sheetcard select,.sheetcard textarea{width:100%;background:#08131d;border:1px solid #12344a;color:#d7f4ff;border-radius:9px;padding:13px;font-size:16px;font-family:inherit}
+.sheetcard textarea{min-height:64px;resize:vertical}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.seg{display:flex;gap:6px}
+.seg button{flex:1;background:#08131d;border:1px solid #12344a;color:#7fb6d1;border-radius:9px;padding:13px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit}
+.seg button.on{border-color:#00e5ff;color:#00e5ff;background:#06283a}
+.erlive{font-size:13px;color:#ffb300;font-weight:700;margin-top:6px}
+.detail{background:#08131d;border-radius:9px;padding:10px 12px;font-size:13px;color:#9dc3d8;line-height:1.55;margin:8px 0;white-space:pre-wrap}
+.detail b{color:#5f7f95;font-size:10px;letter-spacing:1.2px;display:block;margin-bottom:4px}
+.rowbtns{display:flex;gap:8px;margin-top:12px}
+.rowbtns .btn{margin-top:0}
+.btn.danger{border-color:#ff8080;color:#ff8080}
+.x{position:sticky;top:0;float:right;background:#08131d;border:1px solid #234052;color:#7fb6d1;border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer}
+@media(min-width:600px){.sheet{align-items:center}.sheetcard{border-radius:16px;border-bottom:1px solid #12344a}}
+</style>
+</head>
+<body>
+<div class="wr">
+  <div class="hd">
+    <div class="radar"></div>
+    <div><div class="title">MKTG WAR ROOM</div><div class="sub">PATCHOGUE FLOORING · CONTENT TRIAL</div></div>
+    <div class="stamp" id="stamp"></div>
+  </div>
+  <div class="weeksel"><select id="weekSel" aria-label="Week"></select></div>
+  <div class="tabs">
+    <button class="tabbtn on" data-tab="command">COMMAND</button>
+    <button class="tabbtn" data-tab="log">POST LOG</button>
+    <button class="tabbtn" data-tab="winners">WINNERS</button>
+    <button class="tabbtn" data-tab="analyze">ANALYZE</button>
+  </div>
+
+  <div id="pane-command">
+    <div class="prog" id="cProg"></div>
+    <div class="grid" id="cGrid"></div>
+    <button class="btn" id="btnCsv1">EXPORT POST LOG (CSV)</button>
+  </div>
+
+  <div id="pane-log" class="hidden">
+    <input class="search" id="fSearch" placeholder="Search hooks, captions…">
+    <div class="filters">
+      <select id="fDay"><option value="all">All days</option></select>
+      <select id="fPillar"><option value="all">All pillars</option></select>
+      <select id="fStatus"><option value="all">All statuses</option><option value="scheduled">Scheduled</option><option value="posted">Posted</option><option value="skipped">Skipped</option></select>
+    </div>
+    <div class="count" id="logCount"></div>
+    <div id="logList"></div>
+    <button class="btn" id="btnCsv2">EXPORT POST LOG (CSV)</button>
+  </div>
+
+  <div id="pane-winners" class="hidden">
+    <div class="sect">TOP 10 BY ENGAGEMENT RATE</div>
+    <div id="winList"></div>
+  </div>
+
+  <div id="pane-analyze" class="hidden">
+    <div class="sect">BY PILLAR</div><div id="anPillar"></div>
+    <div class="sect">BY FORMAT</div><div id="anFormat"></div>
+    <div class="sect">BY TIME SLOT</div><div id="anSlot"></div>
+    <div class="sect">BY PLATFORM</div><div id="anPlatform"></div>
+  </div>
+</div>
+
+<div id="sheet" class="sheet hidden">
+  <div class="sheetcard">
+    <button class="x" id="btnClose">✕</button>
+    <div id="mMeta"></div>
+    <h2 id="mHook"></h2>
+    <div class="detail"><b>CAPTION</b><span id="mCaption"></span></div>
+    <div class="detail"><b>VISUAL</b><span id="mVisual"></span></div>
+    <div class="detail"><b>CTA · HASHTAGS</b><span id="mCta"></span></div>
+    <div class="sect">LOG METRICS</div>
+    <div class="fld"><label>PLATFORM</label>
+      <select id="fPlatform"><option>Threads</option><option>IG</option><option>FB</option></select></div>
+    <div class="mgrid">
+      <div class="fld"><label>VIEWS</label><input id="fViews" type="number" inputmode="numeric" min="0"></div>
+      <div class="fld"><label>LIKES</label><input id="fLikes" type="number" inputmode="numeric" min="0"></div>
+      <div class="fld"><label>COMMENTS</label><input id="fComments" type="number" inputmode="numeric" min="0"></div>
+      <div class="fld"><label>REPOSTS / SHARES</label><input id="fReposts" type="number" inputmode="numeric" min="0"></div>
+      <div class="fld"><label>SAVES</label><input id="fSaves" type="number" inputmode="numeric" min="0"></div>
+      <div class="fld"><label>PROFILE VISITS</label><input id="fVisits" type="number" inputmode="numeric" min="0"></div>
+      <div class="fld"><label>FOLLOWS</label><input id="fFollows" type="number" inputmode="numeric" min="0"></div>
+      <div class="fld"><label>DMs / LEADS</label><input id="fDms" type="number" inputmode="numeric" min="0"></div>
+    </div>
+    <div class="fld"><label>STATUS</label>
+      <div class="seg" id="segStatus">
+        <button data-s="scheduled">SCHEDULED</button><button data-s="posted">POSTED</button><button data-s="skipped">SKIPPED</button>
+      </div></div>
+    <div class="fld"><label>NOTES</label><textarea id="fNotes"></textarea></div>
+    <div class="erlive" id="mERlive"></div>
+    <div class="rowbtns">
+      <button class="btn amber" id="btnSave">SAVE METRICS</button>
+      <button class="btn danger" id="btnClear">CLEAR</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+const WEEKS = {"2026-10-18": {"id": "2026-10-18", "label": "Week 1 · 10/18–10/24", "posts": [{"date": "2026-10-18", "day": "Sunday", "time": "07:00", "pillar": "pain", "format": "thread", "hook": "The dishwasher leak that ruined the kitchen floor.", "caption": "The dishwasher leak that ruined the kitchen floor.\n\nSlow leaks rot subfloor silently. We pull, test moisture, replace soft substrate, then install waterproof. The floor you see is only half the job.\n\nWater damage repair: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Carousel: leak damage → subfloor repair → new floor.", "cta": "Water damage repair: (631)-260-7480.", "status": "pending", "id": "2026-10-18T07:00"}, {"date": "2026-10-18", "day": "Sunday", "time": "08:30", "pillar": "species", "format": "image", "hook": "Stairs: tread, riser, and nosing options.", "caption": "Stairs: tread, riser, and nosing options.\n\nMatch the floor with solid treads, or contrast with painted risers. Stair work is fussy — it's where craftsmanship shows.\n\nStaircase quotes: (631)-260-7480.", "hashtags": "#WhiteOak #HardwoodFlooring #FlooringIdeas #LongIslandHomes #InteriorDesign", "visual": "Carousel: 3 stair styles.", "cta": "Staircase quotes: (631)-260-7480.", "status": "pending", "id": "2026-10-18T08:30"}, {"date": "2026-10-18", "day": "Sunday", "time": "10:00", "pillar": "trust", "format": "image", "hook": "Twelve steps. Zero shortcuts. Every install.", "caption": "Twelve steps. Zero shortcuts. Every install.\n\nSurvey, moisture test, acclimate, demo, subfloor, level, underlayment, layout, starter rows, field, transitions, walkthrough. That's the pipeline.\n\nThe full standard: patchogueflooring.com", "hashtags": "#PatchogueNY #SuffolkCounty #LicensedContractor #FreeEstimates #SupportLocal", "visual": "Carousel: 12 steps, 4 slides condensed.", "cta": "The full standard: patchogueflooring.com", "status": "pending", "id": "2026-10-18T10:00"}, {"date": "2026-10-18", "day": "Sunday", "time": "12:00", "pillar": "pain", "format": "reel", "hook": "Slippery floors + senior parents = worry.", "caption": "Slippery floors + senior parents = worry.\n\nGloss finishes are ice rinks. Matte finishes + the right texture give grip without looking rustic. Safety can still look like a palace.\n\nSafer floors consult: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Thread: text only.", "cta": "Safer floors consult: (631)-260-7480.", "status": "pending", "id": "2026-10-18T12:00"}, {"date": "2026-10-18", "day": "Sunday", "time": "13:30", "pillar": "tech", "format": "thread", "hook": "Laser leveling: flat within 3/16\" per 10 feet.", "caption": "Laser leveling: flat within 3/16\" per 10 feet.\n\nGrind the highs, fill the lows, verify with a laser. Flat subfloor = silent, long-lived floors. It's step 6 of our 12.\n\nThe 12-step standard: (631)-260-7480.", "hashtags": "#FlooringTrends #HomeRenovation #LVP #FlooringContractor #LongIsland", "visual": "Reel: laser line sweep, satisfying.", "cta": "The 12-step standard: (631)-260-7480.", "status": "pending", "id": "2026-10-18T13:30"}, {"date": "2026-10-18", "day": "Sunday", "time": "15:30", "pillar": "species", "format": "carousel", "hook": "SPC vs WPC cores: rigid vs comfortable.", "caption": "SPC vs WPC cores: rigid vs comfortable.\n\nSPC (stone-plastic) = rigid, dent-resistant, thinner. WPC (wood-plastic) = softer underfoot, warmer. Both waterproof; lifestyle picks.\n\nCore consult: (631)-260-7480.", "hashtags": "#WhiteOak #HardwoodFlooring #FlooringIdeas #LongIslandHomes #InteriorDesign", "visual": "Thread: text only.", "cta": "Core consult: (631)-260-7480.", "status": "pending", "id": "2026-10-18T15:30"}, {"date": "2026-10-18", "day": "Sunday", "time": "17:30", "pillar": "engage", "format": "thread", "hook": "Fall is flooring season. Here's why.", "caption": "Fall is flooring season. Here's why.\n\nCooler air = stable humidity = perfect install conditions. Plus holiday deadlines focus the mind. October/November slots fill first.\n\nClaim your slot: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #Homeowners #FlooringQuestions #Renovation", "visual": "Thread: seasonal, text.", "cta": "Claim your slot: (631)-260-7480.", "status": "pending", "id": "2026-10-18T17:30"}, {"date": "2026-10-18", "day": "Sunday", "time": "19:00", "pillar": "pain", "format": "image", "hook": "Peeling laminate seams? Water got in.", "caption": "Peeling laminate seams? Water got in.\n\nLaminate swells at the joints and never goes back. Kitchens, entries, mudrooms need waterproof cores — rigid SPC LVP laughs at spills.\n\nWe replace swollen laminate weekly. (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Reel: swollen seam close-up → tear-out → waterproof LVP install.", "cta": "We replace swollen laminate weekly. (631)-260-7480.", "status": "pending", "id": "2026-10-18T19:00"}, {"date": "2026-10-18", "day": "Sunday", "time": "20:30", "pillar": "trust", "format": "reel", "hook": "Moisture protocol on every single job.", "caption": "Moisture protocol on every single job.\n\nPin meter. RH probe. Acclimation 48–72h. No floor goes down out of range — this is why ours don't cup, buckle, or gap.\n\nProtocol-driven: (631)-260-7480.", "hashtags": "#PatchogueNY #SuffolkCounty #LicensedContractor #FreeEstimates #SupportLocal", "visual": "Reel: the 3 tests, quick cuts.", "cta": "Protocol-driven: (631)-260-7480.", "status": "pending", "id": "2026-10-18T20:30"}, {"date": "2026-10-18", "day": "Sunday", "time": "21:30", "pillar": "engage", "format": "thread", "hook": "How old are your floors? Be honest.", "caption": "How old are your floors? Be honest.\n\n20+ years? They're telling stories — and showing wear. Drop your floor's age below; we'll tell you refinish vs replace.\n\nFree assessments: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #Homeowners #FlooringQuestions #Renovation", "visual": "Thread: question format.", "cta": "Free assessments: (631)-260-7480.", "status": "pending", "id": "2026-10-18T21:30"}, {"date": "2026-10-19", "day": "Monday", "time": "07:00", "pillar": "pain", "format": "thread", "hook": "How long will my house be a construction zone?", "caption": "How long will my house be a construction zone?\n\nStraight answer: most single-level installs run 2–4 days, refinish 3–5. We give you the day-by-day before we start — no open-ended mess.\n\nGet your timeline in writing: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Thread: day-by-day install timeline, text.", "cta": "Get your timeline in writing: (631)-260-7480.", "status": "pending", "id": "2026-10-19T07:00"}, {"date": "2026-10-19", "day": "Monday", "time": "08:30", "pillar": "species", "format": "image", "hook": "Wide plank: why 7\"+ boards look expensive.", "caption": "Wide plank: why 7\"+ boards look expensive.\n\nFewer seams = calmer, larger-feeling rooms and a custom look. Costs more per sq ft, reads luxury. The 2026 default for high-end installs.\n\nWide-plank quote: (631)-260-7480.", "hashtags": "#WhiteOak #HardwoodFlooring #FlooringIdeas #LongIslandHomes #InteriorDesign", "visual": "Image: wide plank vs narrow strip comparison.", "cta": "Wide-plank quote: (631)-260-7480.", "status": "pending", "id": "2026-10-19T08:30"}, {"date": "2026-10-19", "day": "Monday", "time": "10:00", "pillar": "trust", "format": "image", "hook": "15-year warranty. In writing.", "caption": "15-year warranty. In writing.\n\nWorkmanship warranty you can hold. If our install fails, we come back. That's the deal, on paper, before we start.\n\nWarrantied work: (631)-260-7480 · patchogueflooring.com", "hashtags": "#PatchogueNY #SuffolkCounty #LicensedContractor #FreeEstimates #SupportLocal", "visual": "Image: warranty badge graphic.", "cta": "Warrantied work: (631)-260-7480 · patchogueflooring.com", "status": "pending", "id": "2026-10-19T10:00"}, {"date": "2026-10-19", "day": "Monday", "time": "12:00", "pillar": "pain", "format": "reel", "hook": "The DIY install that went sideways.", "caption": "The DIY install that went sideways.\n\nNo acclimation + no expansion gap = buckled floor by August. We fix 2–3 DIY rescues a month. Cheaper to call before the buckle.\n\nRescue quotes without judgment: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Image: buckled DIY floor, annotated what went wrong.", "cta": "Rescue quotes without judgment: (631)-260-7480.", "status": "pending", "id": "2026-10-19T12:00"}, {"date": "2026-10-19", "day": "Monday", "time": "13:30", "pillar": "tech", "format": "thread", "hook": "Heated bathroom floors: the upgrade you feel daily.", "caption": "Heated bathroom floors: the upgrade you feel daily.\n\nElectric mats under tile, programmable thermostat. Every winter morning, warm feet. It's the most-loved upgrade we install.\n\nHeated floor quote: (631)-260-7480.", "hashtags": "#FlooringTrends #HomeRenovation #LVP #FlooringContractor #LongIsland", "visual": "Reel: thermostat tap → warm tile, cozy.", "cta": "Heated floor quote: (631)-260-7480.", "status": "pending", "id": "2026-10-19T13:30"}, {"date": "2026-10-19", "day": "Monday", "time": "15:30", "pillar": "species", "format": "carousel", "hook": "White oak vs red oak: the undertones decide.", "caption": "White oak vs red oak: the undertones decide.\n\nRed oak pulls pink/salmon under stain. White oak stays neutral — that's why designers spec it for modern looks. Same durability family, totally different vibe.\n\nSee both side by side at your estimate: (631)-260-7480.", "hashtags": "#WhiteOak #HardwoodFlooring #FlooringIdeas #LongIslandHomes #InteriorDesign", "visual": "Image: white oak vs red oak boards side by side, labeled.", "cta": "See both side by side at your estimate: (631)-260-7480.", "status": "pending", "id": "2026-10-19T15:30"}, {"date": "2026-10-19", "day": "Monday", "time": "17:30", "pillar": "engage", "format": "thread", "hook": "Myth: hardwood can't go in kitchens.", "caption": "Myth: hardwood can't go in kitchens.\n\nBusted — with site-applied poly and quick spill habits, hardwood does fine. Or go engineered for extra insurance. Rules, not fears.\n\nKitchen floor consult: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #Homeowners #FlooringQuestions #Renovation", "visual": "Thread: myth-bust format.", "cta": "Kitchen floor consult: (631)-260-7480.", "status": "pending", "id": "2026-10-19T17:30"}, {"date": "2026-10-19", "day": "Monday", "time": "19:00", "pillar": "pain", "format": "image", "hook": "Squeaky floors are telling on your subfloor.", "caption": "Squeaky floors are telling on your subfloor.\n\nSqueaks aren't the hardwood — they're movement underneath. Our 12-step pipeline sisters joists and screws subfloor before plank one. Silence is built, not wished for.\n\nTired of the 2am creak soundtrack? (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Reel: footstep squeak audio over floor, then subfloor screw-down, then silent walk.", "cta": "Tired of the 2am creak soundtrack? (631)-260-7480.", "status": "pending", "id": "2026-10-19T19:00"}, {"date": "2026-10-19", "day": "Monday", "time": "20:30", "pillar": "trust", "format": "reel", "hook": "The walkthrough: we don't leave until you love it.", "caption": "The walkthrough: we don't leave until you love it.\n\nFinal clean, laser re-check, care guide on the counter. You sign off happy or we don't sign off.\n\nWhite-glove finish: (631)-260-7480.", "hashtags": "#PatchogueNY #SuffolkCounty #LicensedContractor #FreeEstimates #SupportLocal", "visual": "Image: care guide + final walkthrough brief.", "cta": "White-glove finish: (631)-260-7480.", "status": "pending", "id": "2026-10-19T20:30"}, {"date": "2026-10-19", "day": "Monday", "time": "21:30", "pillar": "engage", "format": "thread", "hook": "Ask a flooring contractor anything.", "caption": "Ask a flooring contractor anything.\n\nStains, species, costs, timelines — drop your question below and get a pro answer, no sales pitch.\n\nAMA in the comments.", "hashtags": "#Patchogue #LongIsland #Homeowners #FlooringQuestions #Renovation", "visual": "Thread: Q&A format.", "cta": "AMA in the comments.", "status": "pending", "id": "2026-10-19T21:30"}, {"date": "2026-10-20", "day": "Tuesday", "time": "07:00", "pillar": "pain", "format": "thread", "hook": "High heels vs. soft wood: guess who wins.", "caption": "High heels vs. soft wood: guess who wins.\n\nSoft species dent under point loads. Dining rooms need hickory, white oak, or engineered with a thick wear layer — not soft pine.\n\nSpec the right wood the first time: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Image: Janka-style dent comparison graphic.", "cta": "Spec the right wood the first time: (631)-260-7480.", "status": "pending", "id": "2026-10-20T07:00"}, {"date": "2026-10-20", "day": "Tuesday", "time": "08:30", "pillar": "species", "format": "image", "hook": "Maple: light, clean, modern.", "caption": "Maple: light, clean, modern.\n\nPale and subtle-grained — makes small rooms feel bigger. Harder than oak. Note: stains blotchy, so it loves its natural color.\n\nSmall room? Ask about maple: (631)-260-7480.", "hashtags": "#WhiteOak #HardwoodFlooring #FlooringIdeas #LongIslandHomes #InteriorDesign", "visual": "Carousel: maple in 3 room styles.", "cta": "Small room? Ask about maple: (631)-260-7480.", "status": "pending", "id": "2026-10-20T08:30"}, {"date": "2026-10-20", "day": "Tuesday", "time": "10:00", "pillar": "trust", "format": "image", "hook": "Free estimates, laser-measured, 24–48 hours.", "caption": "Free estimates, laser-measured, 24–48 hours.\n\nWe measure with a laser, test moisture, and hand you a line-item quote. No pressure, no obligation — just numbers you can check.\n\nBook yours: (631)-260-7480 · patchogueflooring.com", "hashtags": "#PatchogueNY #SuffolkCounty #LicensedContractor #FreeEstimates #SupportLocal", "visual": "Image: laser measure in action brief.", "cta": "Book yours: (631)-260-7480 · patchogueflooring.com", "status": "pending", "id": "2026-10-20T10:00"}, {"date": "2026-10-20", "day": "Tuesday", "time": "12:00", "pillar": "pain", "format": "reel", "hook": "That gray LVP from 2019 called — it's dated.", "caption": "That gray LVP from 2019 called — it's dated.\n\nTrends move: warm naturals and light oaks replaced cool gray. Floors are a 20-year decision; we steer you to timeless, not trendy.\n\nTimeless floor consult: (631)-260-7480 · patchogueflooring.com", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Carousel: gray vs warm natural, 3 comparisons.", "cta": "Timeless floor consult: (631)-260-7480 · patchogueflooring.com", "status": "pending", "id": "2026-10-20T12:00"}, {"date": "2026-10-20", "day": "Tuesday", "time": "13:30", "pillar": "tech", "format": "thread", "hook": "Click-lock floating: fast, clean, reversible.", "caption": "Click-lock floating: fast, clean, reversible.\n\nNo glue, no nails — planks lock and float over the subfloor. Ideal for condos and quick turnarounds. 1–2 days per level.\n\nFast installs: (631)-260-7480.", "hashtags": "#FlooringTrends #HomeRenovation #LVP #FlooringContractor #LongIsland", "visual": "Thread: text only.", "cta": "Fast installs: (631)-260-7480.", "status": "pending", "id": "2026-10-20T13:30"}, {"date": "2026-10-20", "day": "Tuesday", "time": "15:30", "pillar": "species", "format": "carousel", "hook": "The Janka scale, explained in 20 seconds.", "caption": "The Janka scale, explained in 20 seconds.\n\nIt measures dent resistance. Red oak = 1290 baseline. White oak 1360, hickory 1820, Brazilian cherry 2350. Higher = tougher against life.\n\nSpec by Janka: (631)-260-7480.", "hashtags": "#WhiteOak #HardwoodFlooring #FlooringIdeas #LongIslandHomes #InteriorDesign", "visual": "Image: Janka bar chart graphic, brand colors.", "cta": "Spec by Janka: (631)-260-7480.", "status": "pending", "id": "2026-10-20T15:30"}, {"date": "2026-10-20", "day": "Tuesday", "time": "17:30", "pillar": "engage", "format": "thread", "hook": "Long Island basements: the flooring playbook.", "caption": "Long Island basements: the flooring playbook.\n\nTest moisture. Rigid-core LVP. Never laminate below grade. That's the whole playbook — most contractors skip step one.\n\nBasement consult: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #Homeowners #FlooringQuestions #Renovation", "visual": "Carousel: basement playbook, 3 slides.", "cta": "Basement consult: (631)-260-7480.", "status": "pending", "id": "2026-10-20T17:30"}, {"date": "2026-10-20", "day": "Tuesday", "time": "19:00", "pillar": "pain", "format": "image", "hook": "Cracked tile isn't just ugly — it's a trip edge.", "caption": "Cracked tile isn't just ugly — it's a trip edge.\n\nCracks mean movement underneath or a hollow spot. Patch jobs fail; proper fix = address the substrate, then retile. We do both.\n\nTile repair done right: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Image: cracked tile close-up with hollow-spot diagram.", "cta": "Tile repair done right: (631)-260-7480.", "status": "pending", "id": "2026-10-20T19:00"}, {"date": "2026-10-20", "day": "Tuesday", "time": "20:30", "pillar": "trust", "format": "reel", "hook": "Property managers: your turn-day crew.", "caption": "Property managers: your turn-day crew.\n\n915-unit portfolios to single rentals — per-unit pricing, fast turns, floors that survive tenants. We already speak your language.\n\nVendor line: (631)-260-7480.", "hashtags": "#PatchogueNY #SuffolkCounty #LicensedContractor #FreeEstimates #SupportLocal", "visual": "Image: apartment turn checklist graphic.", "cta": "Vendor line: (631)-260-7480.", "status": "pending", "id": "2026-10-20T20:30"}, {"date": "2026-10-20", "day": "Tuesday", "time": "21:30", "pillar": "engage", "format": "thread", "hook": "Holiday guests are coming. Your floors know it.", "caption": "Holiday guests are coming. Your floors know it.\n\nThanksgiving is 5 weeks out. Installs book 2–3 weeks ahead — the time to call is now, not November 20th.\n\nBeat the rush: (631)-260-7480 · patchogueflooring.com", "hashtags": "#Patchogue #LongIsland #Homeowners #FlooringQuestions #Renovation", "visual": "Image: holiday-ready living room brief.", "cta": "Beat the rush: (631)-260-7480 · patchogueflooring.com", "status": "pending", "id": "2026-10-20T21:30"}, {"date": "2026-10-21", "day": "Wednesday", "time": "07:00", "pillar": "pain", "format": "thread", "hook": "Dark floors are shrinking your rooms.", "caption": "Dark floors are shrinking your rooms.\n\nDark stain + low light = cave. Lighter white oak or maple bounces light and visually adds square footage. Same room, different floor, twice the feel.\n\nFree consult on lightening up: (631)-260-7480 · patchogueflooring.com", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Image: split graphic — dark vs light floor in same room layout.", "cta": "Free consult on lightening up: (631)-260-7480 · patchogueflooring.com", "status": "pending", "id": "2026-10-21T07:00"}, {"date": "2026-10-21", "day": "Wednesday", "time": "08:30", "pillar": "species", "format": "image", "hook": "Walnut: the tuxedo of wood floors.", "caption": "Walnut: the tuxedo of wood floors.\n\nRich chocolate browns, dramatic grain. Softer than oak (Janka 1010) so it's a low-traffic luxury pick — stunning in dining rooms and offices.\n\nStatement floor consult: (631)-260-7480.", "hashtags": "#WhiteOak #HardwoodFlooring #FlooringIdeas #LongIslandHomes #InteriorDesign", "visual": "Image: walnut floor, moody lighting brief.", "cta": "Statement floor consult: (631)-260-7480.", "status": "pending", "id": "2026-10-21T08:30"}, {"date": "2026-10-21", "day": "Wednesday", "time": "10:00", "pillar": "trust", "format": "image", "hook": "Laser scan before we quote.", "caption": "Laser scan before we quote.\n\nEvery room laser-measured to the square foot. Your quote matches your actual rooms — no padding, no surprises.\n\nAccurate quotes: (631)-260-7480.", "hashtags": "#PatchogueNY #SuffolkCounty #LicensedContractor #FreeEstimates #SupportLocal", "visual": "Image: laser measure graphic.", "cta": "Accurate quotes: (631)-260-7480.", "status": "pending", "id": "2026-10-21T10:00"}, {"date": "2026-10-21", "day": "Wednesday", "time": "12:00", "pillar": "pain", "format": "reel", "hook": "The sun is bleaching one side of your floor.", "caption": "The sun is bleaching one side of your floor.\n\nSouth-facing rooms fade finishes unevenly. UV-cured finishes and area-rug rotation slow it; refinishing evens it back out. We see it in every bright living room.\n\nUneven color? Refinish consults are free: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Image: floor with visible rug-fade outline, annotated.", "cta": "Uneven color? Refinish consults are free: (631)-260-7480.", "status": "pending", "id": "2026-10-21T12:00"}, {"date": "2026-10-21", "day": "Wednesday", "time": "13:30", "pillar": "tech", "format": "thread", "hook": "7-inch planks are the new standard.", "caption": "7-inch planks are the new standard.\n\nWide plank reads custom and calms busy grain. If you're choosing today, go wide — narrow strip dates a room fast.\n\nWide-plank installs: (631)-260-7480.", "hashtags": "#FlooringTrends #HomeRenovation #LVP #FlooringContractor #LongIsland", "visual": "Image: wide vs narrow comparison.", "cta": "Wide-plank installs: (631)-260-7480.", "status": "pending", "id": "2026-10-21T13:30"}, {"date": "2026-10-21", "day": "Wednesday", "time": "15:30", "pillar": "species", "format": "carousel", "hook": "Ash: oak's cooler cousin.", "caption": "Ash: oak's cooler cousin.\n\nLight like maple, grain like oak, very hard. Takes gray and neutral stains beautifully — the modern farmhouse pick.\n\nAsh samples at your estimate: (631)-260-7480.", "hashtags": "#WhiteOak #HardwoodFlooring #FlooringIdeas #LongIslandHomes #InteriorDesign", "visual": "Image: ash boards with stain swatches.", "cta": "Ash samples at your estimate: (631)-260-7480.", "status": "pending", "id": "2026-10-21T15:30"}, {"date": "2026-10-21", "day": "Wednesday", "time": "17:30", "pillar": "engage", "format": "thread", "hook": "Salt air eats floors. South Shore, listen up.", "caption": "Salt air eats floors. South Shore, listen up.\n\nCoastal humidity swings punish wood. Acclimation + vapor control + the right finish = floors that survive the Shore.\n\nCoastal installs: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #Homeowners #FlooringQuestions #Renovation", "visual": "Image: shoreline home brief.", "cta": "Coastal installs: (631)-260-7480.", "status": "pending", "id": "2026-10-21T17:30"}, {"date": "2026-10-21", "day": "Wednesday", "time": "19:00", "pillar": "pain", "format": "image", "hook": "Dog nails vs. your floors: the scratch report.", "caption": "Dog nails vs. your floors: the scratch report.\n\nA 70-lb dog is sandpaper with a pulse. Fix: harder species (hickory, white oak), matte finish that hides micro-scratches, and the right sheen. We spec pet-proof floors every week.\n\nDog owner? Ask for the pet-proof spec. Free estimates (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Image: graphic — paw print vs. floor finish chart, brand colors.", "cta": "Dog owner? Ask for the pet-proof spec. Free estimates (631)-260-7480.", "status": "pending", "id": "2026-10-21T19:00"}, {"date": "2026-10-21", "day": "Wednesday", "time": "20:30", "pillar": "trust", "format": "reel", "hook": "Just had us out? Review us.", "caption": "Just had us out? Review us.\n\nGoogle reviews are how neighbors find us. If we earned 5 stars, tell Patchogue. If we didn't, tell us first — we'll make it right.\n\nReview: search Patchogue Flooring on Google.", "hashtags": "#PatchogueNY #SuffolkCounty #LicensedContractor #FreeEstimates #SupportLocal", "visual": "Image: 5-star review request graphic.", "cta": "Review: search Patchogue Flooring on Google.", "status": "pending", "id": "2026-10-21T20:30"}, {"date": "2026-10-21", "day": "Wednesday", "time": "21:30", "pillar": "engage", "format": "thread", "hook": "1960s ranch? Your floors are the time machine.", "caption": "1960s ranch? Your floors are the time machine.\n\nRanch homes with original oak under the carpet are gold mines — refinish what's there before buying new.\n\nCheck under your carpet: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #Homeowners #FlooringQuestions #Renovation", "visual": "Reel: carpet pull-back revealing oak, satisfying.", "cta": "Check under your carpet: (631)-260-7480.", "status": "pending", "id": "2026-10-21T21:30"}, {"date": "2026-10-22", "day": "Thursday", "time": "07:00", "pillar": "pain", "format": "thread", "hook": "Grout lines: where mops go to die.", "caption": "Grout lines: where mops go to die.\n\nSanded grout is porous — it drinks stains. Large-format tile = fewer grout lines. Epoxy grout = stain-proof. We lay it out on a laser grid first.\n\nTile refresh quote: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Carousel: 3 slides — dirty grout, large-format layout, epoxy grout close-up.", "cta": "Tile refresh quote: (631)-260-7480.", "status": "pending", "id": "2026-10-22T07:00"}, {"date": "2026-10-22", "day": "Thursday", "time": "08:30", "pillar": "species", "format": "image", "hook": "Expansion gaps: the 1/2\" that saves floors.", "caption": "Expansion gaps: the 1/2\" that saves floors.\n\nWood moves with seasons. No gap at walls = buckling in August humidity. Hidden under baseboard, working silently forever.\n\nInstalled right: (631)-260-7480 · patchogueflooring.com", "hashtags": "#WhiteOak #HardwoodFlooring #FlooringIdeas #LongIslandHomes #InteriorDesign", "visual": "Image: expansion gap diagram.", "cta": "Installed right: (631)-260-7480 · patchogueflooring.com", "status": "pending", "id": "2026-10-22T08:30"}, {"date": "2026-10-22", "day": "Thursday", "time": "10:00", "pillar": "trust", "format": "image", "hook": "We contain the dust, protect the rest.", "caption": "We contain the dust, protect the rest.\n\nPlastic barriers, shoe covers, daily broom-clean. Your home stays a home while we work — not a jobsite.\n\nRespectful crews: (631)-260-7480.", "hashtags": "#PatchogueNY #SuffolkCounty #LicensedContractor #FreeEstimates #SupportLocal", "visual": "Reel: containment setup timelapse brief.", "cta": "Respectful crews: (631)-260-7480.", "status": "pending", "id": "2026-10-22T10:00"}, {"date": "2026-10-22", "day": "Thursday", "time": "12:00", "pillar": "pain", "format": "reel", "hook": "Stairs that announce every step.", "caption": "Stairs that announce every step.\n\nStair squeaks = loose treads. We re-fasten, add adhesive, and refinish or re-clad treads to match your floors. Whole staircase, silent.\n\nStair refresh: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Reel: squeaky stair → repair → silent.", "cta": "Stair refresh: (631)-260-7480.", "status": "pending", "id": "2026-10-22T12:00"}, {"date": "2026-10-22", "day": "Thursday", "time": "13:30", "pillar": "tech", "format": "thread", "hook": "FSC-certified wood: floors with a clean conscience.", "caption": "FSC-certified wood: floors with a clean conscience.\n\nResponsibly forested oak and maple, chain-of-custody documented. Same beauty, better story — ask and we'll source it.\n\nSustainable options: (631)-260-7480.", "hashtags": "#FlooringTrends #HomeRenovation #LVP #FlooringContractor #LongIsland", "visual": "Image: forest to floor graphic.", "cta": "Sustainable options: (631)-260-7480.", "status": "pending", "id": "2026-10-22T13:30"}, {"date": "2026-10-22", "day": "Thursday", "time": "15:30", "pillar": "species", "format": "carousel", "hook": "LVP vs laminate: stop confusing them.", "caption": "LVP vs laminate: stop confusing them.\n\nLaminate = HDF core, swells with water. LVP = vinyl core, waterproof. Similar look, totally different guts. Wet areas: LVP, no contest.\n\nWet-area spec: (631)-260-7480.", "hashtags": "#WhiteOak #HardwoodFlooring #FlooringIdeas #LongIslandHomes #InteriorDesign", "visual": "Image: core cross-section comparison.", "cta": "Wet-area spec: (631)-260-7480.", "status": "pending", "id": "2026-10-22T15:30"}, {"date": "2026-10-22", "day": "Thursday", "time": "17:30", "pillar": "engage", "format": "thread", "hook": "Myth: LVP looks cheap.", "caption": "Myth: LVP looks cheap.\n\n2015 LVP, maybe. 2026 rigid-core with embossed grain fools designers. The $5 vs $12 difference is all in the wear layer.\n\nSee the difference: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #Homeowners #FlooringQuestions #Renovation", "visual": "Carousel: cheap vs premium LVP close-ups.", "cta": "See the difference: (631)-260-7480.", "status": "pending", "id": "2026-10-22T17:30"}, {"date": "2026-10-22", "day": "Thursday", "time": "19:00", "pillar": "pain", "format": "image", "hook": "Cold tile in a Long Island winter is a choice.", "caption": "Cold tile in a Long Island winter is a choice.\n\nTile over an uninsulated slab pulls heat straight out. Fix: radiant heat mats under tile, or LVP which stays neutral underfoot. Bathrooms go from dreaded to favorite.\n\nAsk about heated floors: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Image: cozy bathroom render brief — warm tile, bare feet.", "cta": "Ask about heated floors: (631)-260-7480.", "status": "pending", "id": "2026-10-22T19:00"}, {"date": "2026-10-22", "day": "Thursday", "time": "20:30", "pillar": "trust", "format": "reel", "hook": "Licensed and insured. Ask to see it.", "caption": "Licensed and insured. Ask to see it.\n\nAny contractor who hesitates to show license and insurance is telling you everything. Ours are current and we'll show them at the estimate.\n\nVerified pros: (631)-260-7480.", "hashtags": "#PatchogueNY #SuffolkCounty #LicensedContractor #FreeEstimates #SupportLocal", "visual": "Thread: text only, direct.", "cta": "Verified pros: (631)-260-7480.", "status": "pending", "id": "2026-10-22T20:30"}, {"date": "2026-10-22", "day": "Thursday", "time": "21:30", "pillar": "engage", "format": "thread", "hook": "Small room? 3 tricks that fake square footage.", "caption": "Small room? 3 tricks that fake square footage.\n\nLight floors, wide planks, one continuous material through doorways. Designers charge for this; we're giving it away.\n\nSmall-room consult: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #Homeowners #FlooringQuestions #Renovation", "visual": "Carousel: 3 tricks illustrated.", "cta": "Small-room consult: (631)-260-7480.", "status": "pending", "id": "2026-10-22T21:30"}, {"date": "2026-10-23", "day": "Friday", "time": "07:00", "pillar": "pain", "format": "thread", "hook": "Flooring quotes feel like a gamble. They shouldn't.", "caption": "Flooring quotes feel like a gamble. They shouldn't.\n\nLine-item quotes: material, labor, prep, extras — each on its own line. Our site even publishes 2026 per-sq-ft ranges. If a quote can't explain itself, walk.\n\nFree laser-measured estimate: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Image: sample line-item quote graphic (sample numbers).", "cta": "Free laser-measured estimate: (631)-260-7480.", "status": "pending", "id": "2026-10-23T07:00"}, {"date": "2026-10-23", "day": "Friday", "time": "08:30", "pillar": "species", "format": "image", "hook": "Engineered vs solid hardwood: the real difference.", "caption": "Engineered vs solid hardwood: the real difference.\n\nSolid = one piece, refinish 3–5x. Engineered = real wood top over plywood core, more stable over concrete and radiant heat. Both are real wood.\n\nWhich fits your home? Free consult: (631)-260-7480.", "hashtags": "#WhiteOak #HardwoodFlooring #FlooringIdeas #LongIslandHomes #InteriorDesign", "visual": "Carousel: cross-section diagrams, 4 slides.", "cta": "Which fits your home? Free consult: (631)-260-7480.", "status": "pending", "id": "2026-10-23T08:30"}, {"date": "2026-10-23", "day": "Friday", "time": "10:00", "pillar": "trust", "format": "image", "hook": "Neighbors refer neighbors. Ask around.", "caption": "Neighbors refer neighbors. Ask around.\n\nMost of our work comes from one street telling the next. Ask your block about us — then call for your free estimate.\n\nJoin the street: (631)-260-7480.", "hashtags": "#PatchogueNY #SuffolkCounty #LicensedContractor #FreeEstimates #SupportLocal", "visual": "Thread: text only, local.", "cta": "Join the street: (631)-260-7480.", "status": "pending", "id": "2026-10-23T10:00"}, {"date": "2026-10-23", "day": "Friday", "time": "12:00", "pillar": "pain", "format": "reel", "hook": "Refinish fumes with kids and pets? Valid fear.", "caption": "Refinish fumes with kids and pets? Valid fear.\n\nOil-based poly = days of odor. Water-based Bona finishes = low odor, back on floors fast. We default to the family-safe option.\n\nAsk for water-based: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Image: finish options comparison graphic.", "cta": "Ask for water-based: (631)-260-7480.", "status": "pending", "id": "2026-10-23T12:00"}, {"date": "2026-10-23", "day": "Friday", "time": "13:30", "pillar": "tech", "format": "thread", "hook": "We moisture-test every slab. Here's why.", "caption": "We moisture-test every slab. Here's why.\n\nPin meters on wood, RH probes on concrete. Numbers decide the install plan — not guesses. Skipping this is how floors fail.\n\nTested installs: (631)-260-7480.", "hashtags": "#FlooringTrends #HomeRenovation #LVP #FlooringContractor #LongIsland", "visual": "Reel: meter readings, quick cuts.", "cta": "Tested installs: (631)-260-7480.", "status": "pending", "id": "2026-10-23T13:30"}, {"date": "2026-10-23", "day": "Friday", "time": "15:30", "pillar": "species", "format": "carousel", "hook": "Radiant heat + wood: the rules.", "caption": "Radiant heat + wood: the rules.\n\nEngineered over plywood core handles heat cycles; solid is risky. Keep surface temps moderate, acclimate longer. Done right, it's the best-feeling floor on earth.\n\nHeated floor consult: (631)-260-7480.", "hashtags": "#WhiteOak #HardwoodFlooring #FlooringIdeas #LongIslandHomes #InteriorDesign", "visual": "Thread: text only.", "cta": "Heated floor consult: (631)-260-7480.", "status": "pending", "id": "2026-10-23T15:30"}, {"date": "2026-10-23", "day": "Friday", "time": "17:30", "pillar": "engage", "format": "thread", "hook": "Which rooms first? Our recommended order.", "caption": "Which rooms first? Our recommended order.\n\n1. Highest-traffic living areas 2. Kitchen 3. Bedrooms last. Phase it without living in chaos — we plan the sequence with you.\n\nPhased plan: (631)-260-7480 · patchogueflooring.com", "hashtags": "#Patchogue #LongIsland #Homeowners #FlooringQuestions #Renovation", "visual": "Carousel: phasing plan graphic.", "cta": "Phased plan: (631)-260-7480 · patchogueflooring.com", "status": "pending", "id": "2026-10-23T17:30"}, {"date": "2026-10-23", "day": "Friday", "time": "19:00", "pillar": "pain", "format": "image", "hook": "Pet stains don't sand out. They go deep.", "caption": "Pet stains don't sand out. They go deep.\n\nUrine soaks past the finish into the wood — dark spots that return after sanding. Honest call: sometimes board replacement beats refinishing. We'll tell you which.\n\nHonest assessment, free: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Image: stained boards marked for replacement, annotated.", "cta": "Honest assessment, free: (631)-260-7480.", "status": "pending", "id": "2026-10-23T19:00"}, {"date": "2026-10-23", "day": "Friday", "time": "20:30", "pillar": "trust", "format": "reel", "hook": "One crew standard, Nassau to Suffolk.", "caption": "One crew standard, Nassau to Suffolk.\n\nSame 12 steps in Massapequa or Middle Island. No B-team, no shortcuts by ZIP code.\n\nOne standard: (631)-260-7480.", "hashtags": "#PatchogueNY #SuffolkCounty #LicensedContractor #FreeEstimates #SupportLocal", "visual": "Thread: text only.", "cta": "One standard: (631)-260-7480.", "status": "pending", "id": "2026-10-23T20:30"}, {"date": "2026-10-23", "day": "Friday", "time": "21:30", "pillar": "engage", "format": "thread", "hook": "This or that: white oak or walnut?", "caption": "This or that: white oak or walnut?\n\nLight and airy vs rich and moody. Which is walking through YOUR front door? Comment below.\n\nSamples of both at estimates: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #Homeowners #FlooringQuestions #Renovation", "visual": "Image: white oak vs walnut split.", "cta": "Samples of both at estimates: (631)-260-7480.", "status": "pending", "id": "2026-10-23T21:30"}, {"date": "2026-10-24", "day": "Saturday", "time": "07:00", "pillar": "pain", "format": "thread", "hook": "Your hardwood is cupping and it's not the wood's fault.", "caption": "Your hardwood is cupping and it's not the wood's fault.\n\nCupped boards = moisture from below. Long Island slabs and crawl spaces feed it all summer. We pin-test and RH-test every slab before a single plank goes down — that's why our installs don't cup.\n\nSuspect moisture? Free moisture test with every estimate. Call or text (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Reel: close-up of cupped boards, then moisture meter reading, then flat new install.", "cta": "Suspect moisture? Free moisture test with every estimate. Call or text (631)-260-7480.", "status": "pending", "id": "2026-10-24T07:00"}, {"date": "2026-10-24", "day": "Saturday", "time": "08:30", "pillar": "species", "format": "image", "hook": "Oil finish vs polyurethane: feel vs armor.", "caption": "Oil finish vs polyurethane: feel vs armor.\n\nHardwax oil = natural feel, spot-repairable, needs maintenance. Poly = plastic-like armor, longer intervals. Lifestyle decides.\n\nFinish consult: (631)-260-7480.", "hashtags": "#WhiteOak #HardwoodFlooring #FlooringIdeas #LongIslandHomes #InteriorDesign", "visual": "Thread: text only.", "cta": "Finish consult: (631)-260-7480.", "status": "pending", "id": "2026-10-24T08:30"}, {"date": "2026-10-24", "day": "Saturday", "time": "10:00", "pillar": "trust", "format": "image", "hook": "We turn houses into palaces. That's the job.", "caption": "We turn houses into palaces. That's the job.\n\nNot floors — the feeling when you walk in and the whole house feels new. That's what we sell, one room at a time.\n\nYour palace awaits: (631)-260-7480.", "hashtags": "#PatchogueNY #SuffolkCounty #LicensedContractor #FreeEstimates #SupportLocal", "visual": "Thread: brand statement.", "cta": "Your palace awaits: (631)-260-7480.", "status": "pending", "id": "2026-10-24T10:00"}, {"date": "2026-10-24", "day": "Saturday", "time": "12:00", "pillar": "pain", "format": "reel", "hook": "New floors, old baseboards — now there's a gap.", "caption": "New floors, old baseboards — now there's a gap.\n\nFloor height changes leave baseboard shadows. We pull shoe molding, reinstall, and caulk clean — the detail that separates pros from handymen.\n\nDetails matter: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Image: baseboard gap vs finished trim close-ups.", "cta": "Details matter: (631)-260-7480.", "status": "pending", "id": "2026-10-24T12:00"}, {"date": "2026-10-24", "day": "Saturday", "time": "13:30", "pillar": "tech", "format": "thread", "hook": "Rigid-core LVP survived the basement test.", "caption": "Rigid-core LVP survived the basement test.\n\nSPC cores don't care about floods, humidity, or concrete. 20-mil wear layer = commercial-grade toughness at home prices.\n\nBasement-proof spec: (631)-260-7480 · patchogueflooring.com", "hashtags": "#FlooringTrends #HomeRenovation #LVP #FlooringContractor #LongIsland", "visual": "Reel: water test on LVP sample.", "cta": "Basement-proof spec: (631)-260-7480 · patchogueflooring.com", "status": "pending", "id": "2026-10-24T13:30"}, {"date": "2026-10-24", "day": "Saturday", "time": "15:30", "pillar": "species", "format": "carousel", "hook": "Matte vs satin vs gloss: sheen changes everything.", "caption": "Matte vs satin vs gloss: sheen changes everything.\n\nMatte hides scratches and looks modern. Satin is the classic middle. Gloss shows every speck of dust. Most of our installs: matte or satin.\n\nSheen samples in hand at estimates: (631)-260-7480.", "hashtags": "#WhiteOak #HardwoodFlooring #FlooringIdeas #LongIslandHomes #InteriorDesign", "visual": "Image: same wood, 3 sheens, labeled.", "cta": "Sheen samples in hand at estimates: (631)-260-7480.", "status": "pending", "id": "2026-10-24T15:30"}, {"date": "2026-10-24", "day": "Saturday", "time": "17:30", "pillar": "engage", "format": "thread", "hook": "Myth: refinishing stinks up the house for weeks.", "caption": "Myth: refinishing stinks up the house for weeks.\n\nOil-based, sure. Water-based Bona finishes: low odor, recoat in hours. The myth is 20 years old.\n\nModern refinish: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #Homeowners #FlooringQuestions #Renovation", "visual": "Thread: myth-bust format.", "cta": "Modern refinish: (631)-260-7480.", "status": "pending", "id": "2026-10-24T17:30"}, {"date": "2026-10-24", "day": "Saturday", "time": "19:00", "pillar": "pain", "format": "image", "hook": "Addition floors never match the original. Why?", "caption": "Addition floors never match the original. Why?\n\nDifferent wood, different age, different finish. We lace in new boards, custom-mix stain, and feather the blend — one continuous floor.\n\nSeamless additions: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #FlooringContractor #HardwoodFloors #HomeImprovement", "visual": "Image: blended old/new floor close-up.", "cta": "Seamless additions: (631)-260-7480.", "status": "pending", "id": "2026-10-24T19:00"}, {"date": "2026-10-24", "day": "Saturday", "time": "20:30", "pillar": "trust", "format": "reel", "hook": "Patchogue born. Suffolk raised. Floors everywhere.", "caption": "Patchogue born. Suffolk raised. Floors everywhere.\n\nWe're your neighbors — Patchogue, East Patchogue, Medford, Sayville, Bayport. When something needs attention, we're 10 minutes away, not 10 days.\n\nYour local crew: (631)-260-7480.", "hashtags": "#PatchogueNY #SuffolkCounty #LicensedContractor #FreeEstimates #SupportLocal", "visual": "Image: service area map graphic.", "cta": "Your local crew: (631)-260-7480.", "status": "pending", "id": "2026-10-24T20:30"}, {"date": "2026-10-24", "day": "Saturday", "time": "21:30", "pillar": "engage", "format": "thread", "hook": "Cape Cods deserve better than carpet.", "caption": "Cape Cods deserve better than carpet.\n\nThose classic LI Capes with 1960s carpet — white oak transforms them while keeping the character. The most satisfying before/afters we do.\n\nCape transformation: (631)-260-7480.", "hashtags": "#Patchogue #LongIsland #Homeowners #FlooringQuestions #Renovation", "visual": "Image: Cape Cod home brief.", "cta": "Cape transformation: (631)-260-7480.", "status": "pending", "id": "2026-10-24T21:30"}]}};
+const PILLARS = {pain:'Pain Points',species:'Wood Species',trust:'Trust & Proof',engage:'Engagement',tech:'New Tech'};
+const FORMATS = {thread:'Thread',image:'Image',reel:'Reel',carousel:'Carousel'};
+const LS_KEY = 'pf-mktg-warroom-v1';
+
+function defMetrics(){return {platform:'Threads',views:0,likes:0,comments:0,reposts:0,saves:0,visits:0,follows:0,dms:0,status:'scheduled',notes:''};}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fmt(n){return (+n||0).toLocaleString('en-US');}
+function erOf(m){const v=+m.views||0;if(v<=0)return null;return ((+m.likes||0)+(+m.comments||0)+(+m.reposts||0)+(+m.saves||0))/v;}
+function pct(r){return r==null?'\u2014':(r*100).toFixed(1)+'%';}
+function getMet(store,weekId,pid){const w=store.metrics[weekId]||{};return Object.assign(defMetrics(),w[pid]||{});}
+
+function groupAvg(posts,mets,keyFn){
+  const map={};
+  posts.forEach(function(p){
+    const m=Object.assign(defMetrics(),mets[p.id]||{});
+    const r=erOf(m); if(r==null)return;
+    const k=keyFn(p,m);
+    if(!map[k])map[k]={key:k,n:0,sum:0};
+    map[k].n++;map[k].sum+=r;
+  });
+  return Object.values(map).map(function(x){return {key:x.key,n:x.n,avg:x.sum/x.n};}).sort(function(a,b){return b.avg-a.avg;});
+}
+
+function computeStats(posts,mets){
+  let posted=0,skipped=0,views=0,erSum=0,erN=0,leads=0,follows=0,top=null;
+  posts.forEach(function(p){
+    const m=Object.assign(defMetrics(),mets[p.id]||{});
+    if(m.status==='posted')posted++;
+    if(m.status==='skipped')skipped++;
+    leads+=+m.dms||0;follows+=+m.follows||0;
+    const r=erOf(m);
+    if(r!=null){views+=+m.views;erSum+=r;erN++;if(!top||r>top.r)top={p:p,r:r,m:m};}
+  });
+  const groups={
+    pillar:groupAvg(posts,mets,function(p){return p.pillar;}),
+    format:groupAvg(posts,mets,function(p){return p.format;}),
+    slot:groupAvg(posts,mets,function(p){return p.time;}),
+    platform:groupAvg(posts,mets,function(p,m){return m.platform;})
+  };
+  function best(g){let b=null;g.forEach(function(x){if(!b||x.avg>b.avg||(x.avg===b.avg&&x.n>b.n))b=x;});return b;}
+  return {total:posts.length,posted:posted,skipped:skipped,views:views,
+    avgER:erN?erSum/erN:null,erN:erN,top:top,leads:leads,follows:follows,
+    bestPillar:best(groups.pillar),bestFormat:best(groups.format),
+    bestSlot:best(groups.slot),bestPlatform:best(groups.platform),groups:groups};
+}
+
+function winners(posts,mets,n){
+  const arr=[];
+  posts.forEach(function(p){
+    const m=Object.assign(defMetrics(),mets[p.id]||{});
+    const r=erOf(m); if(r==null)return;
+    arr.push({p:p,m:m,r:r});
+  });
+  arr.sort(function(a,b){return b.r-a.r;});
+  return arr.slice(0,n||10);
+}
+
+function renderPostCard(p,m){
+  const r=erOf(m);
+  return '<div class="pcard" data-pid="'+esc(p.id)+'">'
+    +'<div class="r1"><span class="badge b-'+esc(p.pillar)+'">'+esc(PILLARS[p.pillar]||p.pillar)+'</span>'
+    +'<span class="badge b-fmt">'+esc(FORMATS[p.format]||p.format)+'</span>'
+    +'<span class="b-time">'+esc(p.day.slice(0,3).toUpperCase())+' '+esc(p.time)+'</span></div>'
+    +'<div class="hook">'+esc(p.hook)+'</div>'
+    +'<div class="r3"><span class="st st-'+esc(m.status)+'">'+esc(m.status.toUpperCase())+'</span>'
+    +(r!=null?'<span class="erchip">ER '+pct(r)+'</span>':'')
+    +'</div></div>';
+}
+
+/* ---- DOM boot (browser only) ---- */
+function boot(){
+  let store;
+  try{store=JSON.parse(localStorage.getItem(LS_KEY))||null;}catch(e){store=null;}
+  if(!store||!store.metrics)store={metrics:{},ui:{week:null,tab:'command',fDay:'all',fPillar:'all',fStatus:'all',q:''}};
+  store.ui=Object.assign({week:null,tab:'command',fDay:'all',fPillar:'all',fStatus:'all',q:''},store.ui||{});
+  const weekIds=Object.keys(WEEKS).sort();
+  if(!store.ui.week||!WEEKS[store.ui.week])store.ui.week=weekIds[0];
+  function save(){try{localStorage.setItem(LS_KEY,JSON.stringify(store));}catch(e){}}
+  function posts(){return WEEKS[store.ui.week].posts;}
+  function mets(){return store.metrics[store.ui.week]||{};}
+  function setMet(pid,m){if(!store.metrics[store.ui.week])store.metrics[store.ui.week]={};store.metrics[store.ui.week][pid]=m;save();}
+
+  const $=function(id){return document.getElementById(id);};
+  const weekSel=$('weekSel');
+  weekIds.forEach(function(id){const o=document.createElement('option');o.value=id;o.textContent=WEEKS[id].label;weekSel.appendChild(o);});
+  weekSel.value=store.ui.week;
+  weekSel.addEventListener('change',function(){store.ui.week=weekSel.value;save();renderAll();});
+
+  document.querySelectorAll('.tabbtn').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.tabbtn').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on');store.ui.tab=b.dataset.tab;save();renderAll();
+      window.scrollTo(0,0);
+    });
+    if(b.dataset.tab===store.ui.tab){document.querySelectorAll('.tabbtn').forEach(function(x){x.classList.remove('on');});b.classList.add('on');}
+  });
+
+  // log filters
+  const fDay=$('fDay'),fPillar=$('fPillar'),fStatus=$('fStatus'),fSearch=$('fSearch');
+  const days=[];posts().forEach(function(p){if(days.indexOf(p.day)<0)days.push(p.day);});
+  days.forEach(function(d){const o=document.createElement('option');o.value=d;o.textContent=d;fDay.appendChild(o);});
+  Object.keys(PILLARS).forEach(function(k){const o=document.createElement('option');o.value=k;o.textContent=PILLARS[k];fPillar.appendChild(o);});
+  fDay.value=store.ui.fDay;fPillar.value=store.ui.fPillar;fStatus.value=store.ui.fStatus;fSearch.value=store.ui.q;
+  [fDay,fPillar,fStatus].forEach(function(el){el.addEventListener('change',function(){store.ui.fDay=fDay.value;store.ui.fPillar=fPillar.value;store.ui.fStatus=fStatus.value;save();renderLog();});});
+  let qT;fSearch.addEventListener('input',function(){clearTimeout(qT);qT=setTimeout(function(){store.ui.q=fSearch.value;save();renderLog();},200);});
+
+  function filtered(){
+    const q=(store.ui.q||'').toLowerCase();
+    return posts().filter(function(p){
+      const m=getMet(store,store.ui.week,p.id);
+      if(store.ui.fDay!=='all'&&p.day!==store.ui.fDay)return false;
+      if(store.ui.fPillar!=='all'&&p.pillar!==store.ui.fPillar)return false;
+      if(store.ui.fStatus!=='all'&&m.status!==store.ui.fStatus)return false;
+      if(q&&(p.hook+' '+p.caption+' '+(p.hashtags||'')).toLowerCase().indexOf(q)<0)return false;
+      return true;
+    });
+  }
+
+  function statCard(k,v,cls,wide,extra){
+    return '<div class="stat'+(wide?' wide':'')+'"><div class="k">'+k+'</div><div class="v'+(cls?' '+cls:'')+'">'+v+'</div>'+(extra||'')+'</div>';
+  }
+
+  function renderCommand(){
+    const s=computeStats(posts(),mets());
+    $('cProg').innerHTML='POSTED '+s.posted+'/'+s.total+' · SKIPPED '+s.skipped+'<div class="bar"><div class="fill" style="width:'+(s.total?Math.round(s.posted/s.total*100):0)+'%"></div></div>';
+    let h='';
+    h+=statCard('TOTAL VIEWS',fmt(s.views));
+    h+=statCard('AVG ENG RATE',pct(s.avgER),'amber');
+    h+=statCard('DMS / LEADS',fmt(s.leads));
+    h+=statCard('FOLLOWS',fmt(s.follows));
+    h+=statCard('TOP POST',s.top?esc(s.top.p.hook.slice(0,60))+(s.top.p.hook.length>60?'…':''):'—',null,true,
+      s.top?'<div class="hook" style="color:#ffb300">ER '+pct(s.top.r)+' · '+fmt(s.top.m.views)+' views · '+esc(s.top.m.platform)+'</div>':'<div class="hook">Log metrics to crown a winner</div>');
+    function bk(label,b,fmtFn){return statCard(label,b?fmtFn(b):'\u2014',b?'amber':'',false,b?'<div class="hook">'+b.n+' post'+(b.n>1?'s':'')+' tracked</div>':'<div class="hook">No data yet</div>');}
+    h+=bk('BEST PILLAR',s.bestPillar,function(b){return esc(PILLARS[b.key]||b.key);});
+    h+=bk('BEST FORMAT',s.bestFormat,function(b){return esc(FORMATS[b.key]||b.key);});
+    h+=bk('BEST TIME SLOT',s.bestSlot,function(b){return esc(b.key)+' ET';});
+    h+=bk('BEST PLATFORM',s.bestPlatform,function(b){return esc(b.key);});
+    $('cGrid').innerHTML=h;
+    $('stamp').innerHTML=WEEKS[store.ui.week].label.toUpperCase()+'<br>'+s.posted+'/'+s.total+' POSTED';
+  }
+
+  function renderLog(){
+    const list=filtered();
+    $('logCount').textContent=list.length+' / '+posts().length+' POSTS';
+    $('logList').innerHTML=list.map(function(p){return renderPostCard(p,getMet(store,store.ui.week,p.id));}).join('')
+      ||'<div class="empty">No posts match the filters.</div>';
+    document.querySelectorAll('#logList .pcard').forEach(function(c){
+      c.addEventListener('click',function(){openSheet(c.dataset.pid);});
+    });
+  }
+
+  function renderWinners(){
+    const w=winners(posts(),mets(),10);
+    if(!w.length){$('winList').innerHTML='<div class="empty">No metrics logged yet.<br>Tap a post in POST LOG to enter views.</div>';return;}
+    $('winList').innerHTML=w.map(function(x,i){
+      const m=x.m;
+      return '<div class="wrow'+(i<3?' top3':'')+'"><div class="rank">'+(i+1)+'</div>'
+        +'<div class="wmain"><div class="hook">'+esc(x.p.hook)+'</div>'
+        +'<div class="meta">'+esc(x.p.day.slice(0,3))+' '+esc(x.p.time)+' · '+esc(PILLARS[x.p.pillar]||x.p.pillar)+' · '+esc(FORMATS[x.p.format]||x.p.format)+' · '+esc(m.platform)
+        +' · '+fmt(m.views)+' views · '+fmt(m.likes)+' likes · '+fmt(m.comments)+' cmt · '+fmt(m.reposts)+' rp · '+fmt(m.saves)+' saves</div></div>'
+        +'<div class="wer"><div class="n">'+pct(x.r)+'</div><div class="l">ENG</div></div></div>';
+    }).join('');
+  }
+
+  function abSection(el,groups,labelFn){
+    if(!groups.length){el.innerHTML='<div class="empty">No data yet.</div>';return;}
+    const mx=Math.max.apply(null,groups.map(function(g){return g.avg;}));
+    el.innerHTML=groups.map(function(g){
+      return '<div class="abrow"><div class="top"><b>'+esc(labelFn(g.key))+'</b><span class="er">'+pct(g.avg)+'</span></div>'
+        +'<div class="meta">'+g.n+' post'+(g.n>1?'s':'')+' with metrics</div>'
+        +'<div class="abbar"><div class="abfill" style="width:'+Math.round(g.avg/mx*100)+'%"></div></div></div>';
+    }).join('');
+  }
+
+  function renderAnalyze(){
+    const s=computeStats(posts(),mets());
+    abSection($('anPillar'),s.groups.pillar,function(k){return PILLARS[k]||k;});
+    abSection($('anFormat'),s.groups.format,function(k){return FORMATS[k]||k;});
+    abSection($('anSlot'),s.groups.slot,function(k){return k+' ET';});
+    abSection($('anPlatform'),s.groups.platform,function(k){return k;});
+  }
+
+  function renderAll(){
+    ['command','log','winners','analyze'].forEach(function(t){$('pane-'+t).classList.toggle('hidden',store.ui.tab!==t);});
+    renderCommand();renderLog();renderWinners();renderAnalyze();
+  }
+
+  /* ---- metrics sheet ---- */
+  let curPid=null,curStatus='scheduled';
+  function openSheet(pid){
+    curPid=pid;
+    const p=posts().filter(function(x){return x.id===pid;})[0];
+    const m=getMet(store,store.ui.week,pid);
+    curStatus=m.status;
+    $('mMeta').innerHTML='<span class="badge b-'+esc(p.pillar)+'">'+esc(PILLARS[p.pillar]||p.pillar)+'</span> '
+      +'<span class="badge b-fmt">'+esc(FORMATS[p.format]||p.format)+'</span> '
+      +'<span class="b-time">'+esc(p.day.toUpperCase())+' '+esc(p.time)+' ET</span>';
+    $('mHook').textContent=p.hook;
+    $('mCaption').textContent=p.caption||'';
+    $('mVisual').textContent=p.visual||'';
+    $('mCta').textContent=((p.cta||'')+'\n'+(p.hashtags||'')).trim();
+    $('fPlatform').value=m.platform;
+    $('fViews').value=m.views||'';$('fLikes').value=m.likes||'';$('fComments').value=m.comments||'';
+    $('fReposts').value=m.reposts||'';$('fSaves').value=m.saves||'';$('fVisits').value=m.visits||'';
+    $('fFollows').value=m.follows||'';$('fDms').value=m.dms||'';$('fNotes').value=m.notes||'';
+    document.querySelectorAll('#segStatus button').forEach(function(b){b.classList.toggle('on',b.dataset.s===curStatus);});
+    updER();$('sheet').classList.remove('hidden');
+  }
+  function num(id){const v=parseInt($('f'+id).value,10);return isNaN(v)||v<0?0:v;}
+  function updER(){
+    const m={views:num('Views'),likes:num('Likes'),comments:num('Comments'),reposts:num('Reposts'),saves:num('Saves')};
+    const r=erOf(m);
+    $('mERlive').textContent=r==null?'ENGAGEMENT RATE: — (enter views)':'ENGAGEMENT RATE: '+pct(r);
+  }
+  ['Views','Likes','Comments','Reposts','Saves'].forEach(function(k){$('f'+k).addEventListener('input',updER);});
+  document.querySelectorAll('#segStatus button').forEach(function(b){
+    b.addEventListener('click',function(){curStatus=b.dataset.s;
+      document.querySelectorAll('#segStatus button').forEach(function(x){x.classList.toggle('on',x===b);});});
+  });
+  $('btnClose').addEventListener('click',function(){$('sheet').classList.add('hidden');});
+  $('sheet').addEventListener('click',function(e){if(e.target===$('sheet'))$('sheet').classList.add('hidden');});
+  $('btnSave').addEventListener('click',function(){
+    setMet(curPid,{platform:$('fPlatform').value,views:num('Views'),likes:num('Likes'),comments:num('Comments'),
+      reposts:num('Reposts'),saves:num('Saves'),visits:num('Visits'),follows:num('Follows'),dms:num('Dms'),
+      status:curStatus,notes:$('fNotes').value});
+    $('sheet').classList.add('hidden');renderAll();
+  });
+  $('btnClear').addEventListener('click',function(){
+    const w=store.metrics[store.ui.week];if(w)delete w[curPid];save();
+    $('sheet').classList.add('hidden');renderAll();
+  });
+
+  function csv(){
+    const rows=[['week','date','day','time','pillar','format','platform','status','views','likes','comments','reposts','saves','profile_visits','follows','dms_leads','engagement_rate','hook','notes']];
+    posts().forEach(function(p){
+      const m=getMet(store,store.ui.week,p.id);const r=erOf(m);
+      rows.push([store.ui.week,p.date,p.day,p.time,PILLARS[p.pillar]||p.pillar,FORMATS[p.format]||p.format,
+        m.platform,m.status,m.views,m.likes,m.comments,m.reposts,m.saves,m.visits,m.follows,m.dms,
+        r==null?'':(r*100).toFixed(2)+'%','"'+String(p.hook).replace(/"/g,'""')+'"','"'+String(m.notes||'').replace(/"/g,'""')+'"']);
+    });
+    const blob=new Blob([rows.map(function(r){return r.join(',');}).join('\n')],{type:'text/csv'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+    a.download='pf-mktg-postlog-'+store.ui.week+'.csv';a.click();
+    setTimeout(function(){URL.revokeObjectURL(a.href);},4000);
+  }
+  $('btnCsv1').addEventListener('click',csv);
+  $('btnCsv2').addEventListener('click',csv);
+
+  renderAll();
+}
+
+if(typeof document!=='undefined'&&typeof document.getElementById==='function'){boot();}
+</script>
+</body>
+</html>
