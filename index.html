@@ -97,6 +97,27 @@ body:before{content:"";position:fixed;inset:0;background-image:linear-gradient(r
 .btn.danger{border-color:#ff8080;color:#ff8080}
 .x{position:sticky;top:0;float:right;background:#08131d;border:1px solid #234052;color:#7fb6d1;border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer}
 @media(min-width:600px){.sheet{align-items:center}.sheetcard{border-radius:16px;border-bottom:1px solid #12344a}}
+.twrap{overflow-x:auto;margin:0 -4px;padding:0 4px;-webkit-overflow-scrolling:touch}
+.ptable{border-collapse:collapse;min-width:700px;width:100%;font-size:11.5px}
+.ptable th{background:#0a141f;color:#5f7f95;font-size:9.5px;letter-spacing:1px;padding:10px 8px;text-align:right;border-bottom:1px solid #12344a;white-space:nowrap;cursor:pointer}
+.ptable th:first-child{text-align:left}
+.ptable td{padding:9px 8px;border-bottom:1px solid #0e2233;text-align:right;color:#d7f4ff;white-space:nowrap}
+.ptable td:first-child{text-align:left}
+.ptable tr:active td{background:#0d1a29}
+.ptable .hk{font-size:11.5px;color:#fff;white-space:normal;line-height:1.35;max-width:190px}
+.ptable .pd{font-size:10px;color:#5f7f95}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.dot.red{background:#ff5050;box-shadow:0 0 8px #ff5050}
+.dot.amber{background:#ffb300;box-shadow:0 0 8px #ffb300}
+.dot.green{background:#00e5ff;box-shadow:0 0 8px #00e5ff}
+.bench .me{font-size:16px;font-weight:800;margin-top:6px;color:#fff}
+.bench .bands{font-size:10.5px;color:#5f7f95;line-height:1.55;margin-top:5px}
+.stat .sub2{font-size:10px;color:#5f7f95;margin-top:8px}
+.chk{margin:10px 0}
+.chk .q{font-size:13px;color:#d7f4ff;margin-bottom:6px;line-height:1.4}
+.chkq{font-size:12.5px;color:#d7f4ff;margin-top:8px;line-height:1.45}
+.chkq .qn{color:#00e5ff;font-weight:800}
+.sect .tag{color:#3d5a6e;letter-spacing:1px}
 </style>
 </head>
 <body>
@@ -112,6 +133,7 @@ body:before{content:"";position:fixed;inset:0;background-image:linear-gradient(r
     <button class="tabbtn" data-tab="log">POST LOG</button>
     <button class="tabbtn" data-tab="winners">WINNERS</button>
     <button class="tabbtn" data-tab="analyze">ANALYZE</button>
+    <button class="tabbtn" data-tab="pro">PRO KPIs</button>
   </div>
 
   <div id="pane-command">
@@ -133,7 +155,10 @@ body:before{content:"";position:fixed;inset:0;background-image:linear-gradient(r
   </div>
 
   <div id="pane-winners" class="hidden">
-    <div class="sect">TOP 10 BY ENGAGEMENT RATE</div>
+    <div class="seg" id="segWinSort" style="margin-bottom:10px">
+      <button data-k="er" class="on">ENG RATE</button><button data-k="sends">SENDS/REACH</button><button data-k="hook">HOOK RATE</button>
+    </div>
+    <div class="sect" id="winTitle">TOP 10 BY ENGAGEMENT RATE</div>
     <div id="winList"></div>
   </div>
 
@@ -142,6 +167,15 @@ body:before{content:"";position:fixed;inset:0;background-image:linear-gradient(r
     <div class="sect">BY FORMAT</div><div id="anFormat"></div>
     <div class="sect">BY TIME SLOT</div><div id="anSlot"></div>
     <div class="sect">BY PLATFORM</div><div id="anPlatform"></div>
+  </div>
+
+  <div id="pane-pro" class="hidden">
+    <div class="sect">PRACTITIONER BENCHMARKS <span class="tag">· DIRECTIONAL FOR ORGANIC</span></div>
+    <div class="grid" id="proBench"></div>
+    <div class="sect">PRO POST TABLE — TAP A ROW FOR DETAIL</div>
+    <div class="twrap"><table class="ptable" id="proTable"></table></div>
+    <div class="sect">PRE-PUBLISH CHECKLIST</div>
+    <div id="proCheck"></div>
   </div>
 </div>
 
@@ -153,6 +187,10 @@ body:before{content:"";position:fixed;inset:0;background-image:linear-gradient(r
     <div class="detail"><b>CAPTION</b><span id="mCaption"></span></div>
     <div class="detail"><b>VISUAL</b><span id="mVisual"></span></div>
     <div class="detail"><b>CTA · HASHTAGS</b><span id="mCta"></span></div>
+    <div class="sect">PRE-PUBLISH CHECKLIST</div>
+    <div class="chk" id="chk1"><div class="q">1 · Does the first frame give a stranger a reason to stay 5 seconds?</div><div class="seg"><button data-v="yes">YES</button><button data-v="no">NO</button></div></div>
+    <div class="chk" id="chk2"><div class="q">2 · Is there one idea a viewer could repeat to a friend?</div><div class="seg"><button data-v="yes">YES</button><button data-v="no">NO</button></div></div>
+    <div class="chk" id="chk3"><div class="q">3 · Would someone save this to use later?</div><div class="seg"><button data-v="yes">YES</button><button data-v="no">NO</button></div></div>
     <div class="sect">LOG METRICS</div>
     <div class="fld"><label>PLATFORM</label>
       <select id="fPlatform"><option>Threads</option><option>IG</option><option>FB</option></select></div>
@@ -166,6 +204,18 @@ body:before{content:"";position:fixed;inset:0;background-image:linear-gradient(r
       <div class="fld"><label>FOLLOWS</label><input id="fFollows" type="number" inputmode="numeric" min="0"></div>
       <div class="fld"><label>DMs / LEADS</label><input id="fDms" type="number" inputmode="numeric" min="0"></div>
     </div>
+    <div class="sect">PRO METRICS — IG INSIGHTS (OPTIONAL)</div>
+    <div class="mgrid">
+      <div class="fld"><label>IMPRESSIONS</label><input id="fImpressions" type="number" inputmode="numeric" min="0"></div>
+      <div class="fld"><label>REACH</label><input id="fReach" type="number" inputmode="numeric" min="0"></div>
+      <div class="fld"><label>3-SEC VIDEO VIEWS</label><input id="fV3s" type="number" inputmode="numeric" min="0"></div>
+      <div class="fld"><label>THRUPLAYS (COMPLETIONS)</label><input id="fThru" type="number" inputmode="numeric" min="0"></div>
+      <div class="fld"><label>AVG WATCH (SEC)</label><input id="fAvgWatch" type="number" inputmode="decimal" step="any" min="0"></div>
+      <div class="fld"><label>VIDEO LENGTH (SEC)</label><input id="fVidLen" type="number" inputmode="decimal" step="any" min="0"></div>
+      <div class="fld"><label>NON-FOLLOWER REACH %</label><input id="fNonFol" type="number" inputmode="decimal" step="any" min="0" max="100"></div>
+      <div class="fld"><label>LINK CLICKS</label><input id="fLinkClicks" type="number" inputmode="numeric" min="0"></div>
+    </div>
+    <div class="erlive" id="mProLive"></div>
     <div class="fld"><label>STATUS</label>
       <div class="seg" id="segStatus">
         <button data-s="scheduled">SCHEDULED</button><button data-s="posted">POSTED</button><button data-s="skipped">SKIPPED</button>
@@ -186,7 +236,47 @@ const PILLARS = {pain:'Pain Points',species:'Wood Species',trust:'Trust & Proof'
 const FORMATS = {thread:'Thread',image:'Image',reel:'Reel',carousel:'Carousel'};
 const LS_KEY = 'pf-mktg-warroom-v1';
 
-function defMetrics(){return {platform:'Threads',views:0,likes:0,comments:0,reposts:0,saves:0,visits:0,follows:0,dms:0,status:'scheduled',notes:''};}
+function defMetrics(){return {platform:'Threads',views:0,likes:0,comments:0,reposts:0,saves:0,visits:0,follows:0,dms:0,status:'scheduled',notes:'',
+  impressions:0,reach:0,v3s:0,thru:0,avgwatch:0,vidlen:0,nonfol:null,linkclicks:0,chk1:null,chk2:null,chk3:null};}
+function proOf(m){
+  const imp=+m.impressions||0,reach=+m.reach||0,v3=+m.v3s||0,thru=+m.thru||0;
+  const eng=(+m.likes||0)+(+m.comments||0)+(+m.reposts||0)+(+m.saves||0);
+  const nf=(m.nonfol==null||m.nonfol===''||isNaN(+m.nonfol))?null:+m.nonfol;
+  return {
+    hook:imp>0?v3/imp:null,
+    hold:v3>0?thru/v3:null,
+    completion:imp>0?thru/imp:null,
+    sendsReach:reach>0?(+m.reposts||0)/reach:null,
+    savesReach:reach>0?(+m.saves||0)/reach:null,
+    erImp:imp>0?eng/imp:null,
+    nonfol:nf
+  };
+}
+const PROKEYS=[
+ {k:'hook',label:'HOOK RATE',bands:'<15% weak (kill floor) · 20–25% solid · 25.4% Meta avg (Billo H1 2026, 88K ads) · 30%+ strong · 40%+ elite'},
+ {k:'hold',label:'HOLD RATE',bands:'<25% pacing problem if hook is good · 40–50% typical band'},
+ {k:'completion',label:'COMPLETION RATE',bands:'~18% Meta target'},
+ {k:'sendsReach',label:'SENDS / REACH',bands:"Mosseri's #1 IG ranking signal — no fixed bar, higher = better, trend vs your median"},
+ {k:'erImp',label:'ER / IMPRESSION',bands:'~1.5% US brand avg (Emplifi Q3 2026)'},
+ {k:'nonfol',label:'NON-FOLLOWER REACH',bands:'higher = real growth · Reels/Explore majority-unfollowed by design'}
+];
+function bandColor(key,v){
+  if(v==null||isNaN(v))return null;
+  if(key==='hook')return v<0.15?'red':(v<0.20?'amber':'green');
+  if(key==='hold')return v<0.25?'red':(v<0.40?'amber':'green');
+  if(key==='completion')return v<0.10?'red':(v<0.18?'amber':'green');
+  if(key==='erImp')return v<0.01?'red':(v<0.015?'amber':'green');
+  if(key==='nonfol')return v<30?'red':(v<50?'amber':'green');
+  return null;
+}
+function proMedianSends(posted,ms,weekId,store){
+  const v=[];
+  posted.forEach(function(p){const x=proOf(getMet(store,weekId,p.id)).sendsReach;if(x!=null)v.push(x);});
+  if(!v.length)return null;
+  v.sort(function(a,b){return a-b;});
+  const mid=Math.floor(v.length/2);
+  return v.length%2?v[mid]:(v[mid-1]+v[mid])/2;
+}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function fmt(n){return (+n||0).toLocaleString('en-US');}
 function erOf(m){const v=+m.views||0;if(v<=0)return null;return ((+m.likes||0)+(+m.comments||0)+(+m.reposts||0)+(+m.saves||0))/v;}
@@ -228,11 +318,15 @@ function computeStats(posts,mets){
     bestSlot:best(groups.slot),bestPlatform:best(groups.platform),groups:groups};
 }
 
-function winners(posts,mets,n){
+function winners(posts,mets,n,key){
   const arr=[];
   posts.forEach(function(p){
     const m=Object.assign(defMetrics(),mets[p.id]||{});
-    const r=erOf(m); if(r==null)return;
+    let r;
+    if(key==='sends')r=proOf(m).sendsReach;
+    else if(key==='hook')r=proOf(m).hook;
+    else r=erOf(m);
+    if(r==null)return;
     arr.push({p:p,m:m,r:r});
   });
   arr.sort(function(a,b){return b.r-a.r;});
@@ -256,7 +350,7 @@ function boot(){
   let store;
   try{store=JSON.parse(localStorage.getItem(LS_KEY))||null;}catch(e){store=null;}
   if(!store||!store.metrics)store={metrics:{},ui:{week:null,tab:'command',fDay:'all',fPillar:'all',fStatus:'all',q:''}};
-  store.ui=Object.assign({week:null,tab:'command',fDay:'all',fPillar:'all',fStatus:'all',q:''},store.ui||{});
+  store.ui=Object.assign({week:null,tab:'command',fDay:'all',fPillar:'all',fStatus:'all',q:'',winSort:'er',proSort:null,proDir:-1},store.ui||{});
   const weekIds=Object.keys(WEEKS).sort();
   if(!store.ui.week||!WEEKS[store.ui.week])store.ui.week=weekIds[0];
   function save(){try{localStorage.setItem(LS_KEY,JSON.stringify(store));}catch(e){}}
@@ -277,6 +371,14 @@ function boot(){
       window.scrollTo(0,0);
     });
     if(b.dataset.tab===store.ui.tab){document.querySelectorAll('.tabbtn').forEach(function(x){x.classList.remove('on');});b.classList.add('on');}
+  });
+  document.querySelectorAll('#segWinSort button').forEach(function(b){
+    b.addEventListener('click',function(){
+      store.ui.winSort=b.dataset.k;save();
+      document.querySelectorAll('#segWinSort button').forEach(function(x){x.classList.toggle('on',x===b);});
+      renderWinners();
+    });
+    if(b.dataset.k===(store.ui.winSort||'er')){document.querySelectorAll('#segWinSort button').forEach(function(x){x.classList.remove('on');});b.classList.add('on');}
   });
 
   // log filters
@@ -333,8 +435,11 @@ function boot(){
     });
   }
 
+  const WINLBL={er:['TOP 10 BY ENGAGEMENT RATE','ENG'],sends:['TOP 10 BY SENDS / REACH','SENDS/R'],hook:['TOP 10 BY HOOK RATE','HOOK']};
   function renderWinners(){
-    const w=winners(posts(),mets(),10);
+    const key=store.ui.winSort||'er';
+    const w=winners(posts(),mets(),10,key);
+    $('winTitle').textContent=WINLBL[key][0];
     if(!w.length){$('winList').innerHTML='<div class="empty">No metrics logged yet.<br>Tap a post in POST LOG to enter views.</div>';return;}
     $('winList').innerHTML=w.map(function(x,i){
       const m=x.m;
@@ -342,7 +447,7 @@ function boot(){
         +'<div class="wmain"><div class="hook">'+esc(x.p.hook)+'</div>'
         +'<div class="meta">'+esc(x.p.day.slice(0,3))+' '+esc(x.p.time)+' · '+esc(PILLARS[x.p.pillar]||x.p.pillar)+' · '+esc(FORMATS[x.p.format]||x.p.format)+' · '+esc(m.platform)
         +' · '+fmt(m.views)+' views · '+fmt(m.likes)+' likes · '+fmt(m.comments)+' cmt · '+fmt(m.reposts)+' rp · '+fmt(m.saves)+' saves</div></div>'
-        +'<div class="wer"><div class="n">'+pct(x.r)+'</div><div class="l">ENG</div></div></div>';
+        +'<div class="wer"><div class="n">'+pct(x.r)+'</div><div class="l">'+WINLBL[key][1]+'</div></div></div>';
     }).join('');
   }
 
@@ -364,13 +469,97 @@ function boot(){
     abSection($('anPlatform'),s.groups.platform,function(k){return k;});
   }
 
+  var CHKQ=[
+    'Does the first frame give a stranger a reason to stay 5 seconds?',
+    'Is there one idea a viewer could repeat to a friend?',
+    'Would someone save this to use later?'
+  ];
+  function renderPro(){
+    const ps=posts(),ms=mets(),wk=store.ui.week;
+    const posted=ps.filter(function(p){return getMet(store,wk,p.id).status==='posted';});
+    const med=proMedianSends(posted,ms,wk,store);
+    let bh='';
+    PROKEYS.forEach(function(b){
+      const vals=[];
+      posted.forEach(function(p){const v=proOf(getMet(store,wk,p.id))[b.k];if(v!=null)vals.push(v);});
+      const avg=vals.length?vals.reduce(function(a,x){return a+x;},0)/vals.length:null;
+      let col=null;
+      if(avg!=null){col=(b.k==='sendsReach'&&med!=null)?(avg>=med?'green':'amber'):bandColor(b.k,avg);}
+      const disp=avg==null?'—':(b.k==='nonfol'?avg.toFixed(1)+'%':pct(avg));
+      bh+='<div class="stat bench"><div class="k">'+esc(b.label)+'</div>'
+        +'<div class="me">'+(avg==null?disp:'<span class="dot '+col+'"></span>'+disp)+'</div>'
+        +'<div class="bands">'+esc(b.bands)+'</div>'
+        +'<div class="sub2">'+(vals.length?('you: '+vals.length+' post'+(vals.length>1?'s':'')+' tracked'):'no data yet')+'</div></div>';
+    });
+    $('proBench').innerHTML=bh;
+    renderProTable(posted);
+    let pass=0;
+    posted.forEach(function(p){
+      const m=getMet(store,wk,p.id);
+      if(m.chk1==='yes'&&m.chk2==='yes'&&m.chk3==='yes')pass++;
+    });
+    let ch='<div class="stat wide"><div class="k">PRE-PUBLISH CHECKLIST — '+pass+'/'+posted.length+' POSTED PASS ALL THREE</div>';
+    CHKQ.forEach(function(q,i){ch+='<div class="chkq"><span class="qn">'+(i+1)+' ·</span> '+esc(q)+'</div>';});
+    ch+='<div class="sub2">Answer per post: POST LOG → tap a post → checklist (optional).</div></div>';
+    $('proCheck').innerHTML=ch;
+  }
+
+  function renderProTable(posted){
+    const cols=[
+      {k:'date',l:'POST'},{k:'hook',l:'HOOK'},{k:'hold',l:'HOLD'},{k:'completion',l:'COMPL'},
+      {k:'sendsReach',l:'SENDS/R'},{k:'savesReach',l:'SAVES/R'},{k:'erImp',l:'ER/IMP'},{k:'nonfol',l:'NF%'}
+    ];
+    let rows=posted.map(function(p){
+      const m=getMet(store,store.ui.week,p.id);
+      return {p:p,m:m,pr:proOf(m)};
+    });
+    const sk=store.ui.proSort;
+    if(sk){
+      rows.sort(function(a,b){
+        let va,vb;
+        if(sk==='date'){va=a.p.date+'T'+a.p.time;vb=b.p.date+'T'+b.p.time;}
+        else{va=a.pr[sk];vb=b.pr[sk];va=(va==null?-1:va);vb=(vb==null?-1:vb);}
+        return (va>vb?1:va<vb?-1:0)*store.ui.proDir;
+      });
+    }
+    let h='<thead><tr><th data-k="date">POST'+(sk==='date'?(store.ui.proDir<0?' ▼':' ▲'):'')+'</th><th>PLAT</th>';
+    cols.slice(1).forEach(function(c){
+      h+='<th data-k="'+c.k+'">'+c.l+(sk===c.k?(store.ui.proDir<0?' ▼':' ▲'):'')+'</th>';
+    });
+    h+='</tr></thead><tbody>';
+    if(!rows.length)h+='<tr><td colspan="9" style="text-align:center;color:#5f7f95;padding:22px">No posted posts yet.<br>Tap a post in POST LOG, mark POSTED, enter Insights.</td></tr>';
+    rows.forEach(function(r){
+      const pr=r.pr;
+      function cell(v){return v==null?'<span style="color:#3d5a6e">—</span>':pct(v);}
+      h+='<tr data-pid="'+esc(r.p.id)+'">'
+        +'<td><div class="hk">'+esc(r.p.hook.slice(0,52))+(r.p.hook.length>52?'…':'')+'</div><div class="pd">'+esc(r.p.day.slice(0,3))+' '+esc(r.p.time)+' · '+esc(r.m.platform)+'</div></td>'
+        +'<td>'+esc(r.m.platform)+'</td>'
+        +'<td>'+cell(pr.hook)+'</td><td>'+cell(pr.hold)+'</td><td>'+cell(pr.completion)+'</td>'
+        +'<td>'+cell(pr.sendsReach)+'</td><td>'+cell(pr.savesReach)+'</td><td>'+cell(pr.erImp)+'</td>'
+        +'<td>'+(pr.nonfol==null?'<span style="color:#3d5a6e">—</span>':pr.nonfol.toFixed(0)+'%')+'</td></tr>';
+    });
+    h+='</tbody>';
+    $('proTable').innerHTML=h;
+    $('proTable').querySelectorAll('th[data-k]').forEach(function(th){
+      th.addEventListener('click',function(){
+        const k=th.dataset.k;
+        if(store.ui.proSort===k)store.ui.proDir*=-1;
+        else{store.ui.proSort=k;store.ui.proDir=-1;}
+        save();renderPro();
+      });
+    });
+    $('proTable').querySelectorAll('tr[data-pid]').forEach(function(tr){
+      tr.addEventListener('click',function(){openSheet(tr.dataset.pid);});
+    });
+  }
+
   function renderAll(){
-    ['command','log','winners','analyze'].forEach(function(t){$('pane-'+t).classList.toggle('hidden',store.ui.tab!==t);});
-    renderCommand();renderLog();renderWinners();renderAnalyze();
+    ['command','log','winners','analyze','pro'].forEach(function(t){$('pane-'+t).classList.toggle('hidden',store.ui.tab!==t);});
+    renderCommand();renderLog();renderWinners();renderAnalyze();renderPro();
   }
 
   /* ---- metrics sheet ---- */
-  let curPid=null,curStatus='scheduled';
+  let curPid=null,curStatus='scheduled',curChk={chk1:null,chk2:null,chk3:null};
   function openSheet(pid){
     curPid=pid;
     const p=posts().filter(function(x){return x.id===pid;})[0];
@@ -387,26 +576,62 @@ function boot(){
     $('fViews').value=m.views||'';$('fLikes').value=m.likes||'';$('fComments').value=m.comments||'';
     $('fReposts').value=m.reposts||'';$('fSaves').value=m.saves||'';$('fVisits').value=m.visits||'';
     $('fFollows').value=m.follows||'';$('fDms').value=m.dms||'';$('fNotes').value=m.notes||'';
+    $('fImpressions').value=m.impressions||'';$('fReach').value=m.reach||'';
+    $('fV3s').value=m.v3s||'';$('fThru').value=m.thru||'';
+    $('fAvgWatch').value=m.avgwatch||'';$('fVidLen').value=m.vidlen||'';
+    $('fNonFol').value=(m.nonfol==null?'':m.nonfol);$('fLinkClicks').value=m.linkclicks||'';
+    curChk={chk1:m.chk1||null,chk2:m.chk2||null,chk3:m.chk3||null};
+    ['chk1','chk2','chk3'].forEach(function(c){
+      document.querySelectorAll('#'+c+' button').forEach(function(b){b.classList.toggle('on',b.dataset.v===curChk[c]);});
+    });
     document.querySelectorAll('#segStatus button').forEach(function(b){b.classList.toggle('on',b.dataset.s===curStatus);});
-    updER();$('sheet').classList.remove('hidden');
+    updER();updPro();$('sheet').classList.remove('hidden');
   }
   function num(id){const v=parseInt($('f'+id).value,10);return isNaN(v)||v<0?0:v;}
+  function numf(id){const v=parseFloat($('f'+id).value);return isNaN(v)||v<0?0:v;}
+  function updPro(){
+    const m={impressions:num('Impressions'),reach:num('Reach'),v3s:num('V3s'),thru:num('Thru'),
+      likes:num('Likes'),comments:num('Comments'),reposts:num('Reposts'),saves:num('Saves')};
+    const nfv=parseFloat($('fNonFol').value);m.nonfol=isNaN(nfv)?null:nfv;
+    const pr=proOf(m);const parts=[];
+    if(pr.hook!=null)parts.push('HOOK '+pct(pr.hook));
+    if(pr.hold!=null)parts.push('HOLD '+pct(pr.hold));
+    if(pr.completion!=null)parts.push('COMPL '+pct(pr.completion));
+    if(pr.sendsReach!=null)parts.push('SENDS/R '+pct(pr.sendsReach));
+    if(pr.erImp!=null)parts.push('ER/IMP '+pct(pr.erImp));
+    $('mProLive').textContent=parts.length?('PRO · '+parts.join(' · ')):'PRO · — (enter impressions + 3s views)';
+  }
   function updER(){
     const m={views:num('Views'),likes:num('Likes'),comments:num('Comments'),reposts:num('Reposts'),saves:num('Saves')};
     const r=erOf(m);
     $('mERlive').textContent=r==null?'ENGAGEMENT RATE: — (enter views)':'ENGAGEMENT RATE: '+pct(r);
   }
   ['Views','Likes','Comments','Reposts','Saves'].forEach(function(k){$('f'+k).addEventListener('input',updER);});
+  ['Impressions','Reach','V3s','Thru','NonFol'].forEach(function(k){$('f'+k).addEventListener('input',updPro);});
   document.querySelectorAll('#segStatus button').forEach(function(b){
     b.addEventListener('click',function(){curStatus=b.dataset.s;
       document.querySelectorAll('#segStatus button').forEach(function(x){x.classList.toggle('on',x===b);});});
   });
+  ['chk1','chk2','chk3'].forEach(function(c){
+    document.querySelectorAll('#'+c+' button').forEach(function(b){
+      b.addEventListener('click',function(){
+        const was=b.classList.contains('on');
+        document.querySelectorAll('#'+c+' button').forEach(function(x){x.classList.remove('on');});
+        curChk[c]=was?null:b.dataset.v;
+        if(!was)b.classList.add('on');
+      });
+    });
+  });
   $('btnClose').addEventListener('click',function(){$('sheet').classList.add('hidden');});
   $('sheet').addEventListener('click',function(e){if(e.target===$('sheet'))$('sheet').classList.add('hidden');});
   $('btnSave').addEventListener('click',function(){
+    let nf=parseFloat($('fNonFol').value);nf=isNaN(nf)?null:Math.max(0,Math.min(100,nf));
     setMet(curPid,{platform:$('fPlatform').value,views:num('Views'),likes:num('Likes'),comments:num('Comments'),
       reposts:num('Reposts'),saves:num('Saves'),visits:num('Visits'),follows:num('Follows'),dms:num('Dms'),
-      status:curStatus,notes:$('fNotes').value});
+      status:curStatus,notes:$('fNotes').value,
+      impressions:num('Impressions'),reach:num('Reach'),v3s:num('V3s'),thru:num('Thru'),
+      avgwatch:numf('AvgWatch'),vidlen:numf('VidLen'),nonfol:nf,linkclicks:num('LinkClicks'),
+      chk1:curChk.chk1,chk2:curChk.chk2,chk3:curChk.chk3});
     $('sheet').classList.add('hidden');renderAll();
   });
   $('btnClear').addEventListener('click',function(){
@@ -415,12 +640,19 @@ function boot(){
   });
 
   function csv(){
-    const rows=[['week','date','day','time','pillar','format','platform','status','views','likes','comments','reposts','saves','profile_visits','follows','dms_leads','engagement_rate','hook','notes']];
+    const rows=[['week','date','day','time','pillar','format','platform','status','views','likes','comments','reposts','saves','profile_visits','follows','dms_leads','engagement_rate','impressions','reach','v3s','thruplays','avg_watch_s','video_len_s','nonfollower_pct','link_clicks','hook_rate','hold_rate','completion_rate','sends_per_reach','saves_per_reach','er_per_impression','chk_all3','hook','notes']];
     posts().forEach(function(p){
-      const m=getMet(store,store.ui.week,p.id);const r=erOf(m);
+      const m=getMet(store,store.ui.week,p.id);const r=erOf(m);const pr=proOf(m);
+      const chk=[m.chk1,m.chk2,m.chk3];
+      const pc=function(v){return v==null?'':(v*100).toFixed(2)+'%';};
       rows.push([store.ui.week,p.date,p.day,p.time,PILLARS[p.pillar]||p.pillar,FORMATS[p.format]||p.format,
         m.platform,m.status,m.views,m.likes,m.comments,m.reposts,m.saves,m.visits,m.follows,m.dms,
-        r==null?'':(r*100).toFixed(2)+'%','"'+String(p.hook).replace(/"/g,'""')+'"','"'+String(m.notes||'').replace(/"/g,'""')+'"']);
+        r==null?'':(r*100).toFixed(2)+'%',
+        m.impressions||'',m.reach||'',m.v3s||'',m.thru||'',m.avgwatch||'',m.vidlen||'',
+        m.nonfol==null?'':m.nonfol,m.linkclicks||'',
+        pc(pr.hook),pc(pr.hold),pc(pr.completion),pc(pr.sendsReach),pc(pr.savesReach),pc(pr.erImp),
+        chk.every(function(x){return x==='yes';})?'yes':(chk.some(function(x){return x!=null;})?'partial':''),
+        '"'+String(p.hook).replace(/"/g,'""')+'"','"'+String(m.notes||'').replace(/"/g,'""')+'"']);
     });
     const blob=new Blob([rows.map(function(r){return r.join(',');}).join('\n')],{type:'text/csv'});
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);
